@@ -3,20 +3,47 @@
     <h1 class="mb-4">Contact</h1>
     <div class="row">
       <div class="col-md-6">
-        <form>
+        <form [formRoot]="contactForm">
           <div class="mb-3">
             <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name">
+            <input type="text" class="form-control" id="name" [formField]="contactForm.name">
+            @if (contactForm.name().touched() && contactForm.name().invalid()) {
+              <div class="text-danger mt-1">
+                @for (error of contactForm.name().errors(); track error) {
+                  <small>{{ error.message }}</small>
+                }
+              </div>
+            }
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email">
+            <input type="email" class="form-control" id="email" [formField]="contactForm.email">
+            @if (contactForm.email().touched() && contactForm.email().invalid()) {
+              <div class="text-danger mt-1">
+                @for (error of contactForm.email().errors(); track error) {
+                  <small>{{ error.message }}</small>
+                }
+              </div>
+            }
           </div>
           <div class="mb-3">
             <label for="message" class="form-label">Message</label>
-            <textarea class="form-control" id="message" rows="4"></textarea>
+            <textarea class="form-control" id="message" rows="4" [formField]="contactForm.message"></textarea>
+            @if (contactForm.message().touched() && contactForm.message().invalid()) {
+              <div class="text-danger mt-1">
+                @for (error of contactForm.message().errors(); track error) {
+                  <small>{{ error.message }}</small>
+                }
+              </div>
+            }
           </div>
-          <button type="submit" class="btn btn-primary">Send</button>
+          <button type="submit" class="btn btn-primary" [disabled]="contactForm().submitting()">
+            @if (contactForm().submitting()) {
+              Sending...
+            } @else {
+              Send
+            }
+          </button>
         </form>
       </div>
       <div class="col-md-6">
