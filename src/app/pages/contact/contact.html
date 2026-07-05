@@ -9,7 +9,7 @@
             <input type="text" class="form-control" id="name" [formField]="contactForm.name">
             @if (contactForm.name().touched() && contactForm.name().invalid()) {
               <div class="text-danger mt-1">
-                @for (error of contactForm.name().errors(); track error) {
+                @for (error of $any(contactForm.name().errors()); track error) {
                   <small>{{ error.message }}</small>
                 }
               </div>
@@ -20,7 +20,7 @@
             <input type="email" class="form-control" id="email" [formField]="contactForm.email">
             @if (contactForm.email().touched() && contactForm.email().invalid()) {
               <div class="text-danger mt-1">
-                @for (error of contactForm.email().errors(); track error) {
+                @for (error of $any($any(contactForm.email().errors())); track error) {
                   <small>{{ error.message }}</small>
                 }
               </div>
@@ -31,7 +31,7 @@
             <textarea class="form-control" id="message" rows="4" [formField]="contactForm.message"></textarea>
             @if (contactForm.message().touched() && contactForm.message().invalid()) {
               <div class="text-danger mt-1">
-                @for (error of contactForm.message().errors(); track error) {
+                @for (error of $any(contactForm.message().errors()); track error) {
                   <small>{{ error.message }}</small>
                 }
               </div>
