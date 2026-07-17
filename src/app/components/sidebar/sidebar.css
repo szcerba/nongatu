@@ -1,0 +1,125 @@
+:host {
+  display: block;
+}
+
+/* Desktop sidebar */
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+  border-right: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar .sidebar-brand {
+  cursor: pointer;
+  user-select: none;
+  padding: 1rem 1.25rem !important;
+}
+
+.sidebar .sidebar-brand:hover {
+  background-color: rgba(148, 163, 184, 0.1);
+}
+
+.sidebar .sidebar-brand i {
+  color: #60a5fa;
+}
+
+.sidebar.collapsed .sidebar-brand {
+  padding: 0.75rem !important;
+  justify-content: center;
+}
+
+.sidebar .nav-link {
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  color: #94a3b8 !important;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #e2e8f0 !important;
+}
+
+.sidebar .nav-link.active {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+  color: #60a5fa !important;
+  font-weight: 500;
+}
+
+.sidebar .nav-link.active i {
+  color: #60a5fa;
+}
+
+.sidebar.collapsed .nav-link {
+  justify-content: center;
+  padding: 0.625rem;
+}
+
+.sidebar .nav-link i {
+  font-size: 1.15rem;
+  min-width: 1.15rem;
+}
+
+/* Mobile offcanvas */
+.offcanvas {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+  color: #e2e8f0;
+}
+
+.offcanvas .sidebar-brand {
+  padding: 1rem 1.25rem;
+  color: #e2e8f0;
+}
+
+.offcanvas .sidebar-brand i {
+  color: #60a5fa;
+}
+
+.offcanvas .offcanvas-body {
+  padding: 0.5rem 0.75rem !important;
+}
+
+.offcanvas .nav-link {
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  color: #94a3b8 !important;
+  margin-bottom: 0.25rem;
+}
+
+.offcanvas .nav-link:hover {
+  background-color: rgba(148, 163, 184, 0.1);
+  color: #e2e8f0 !important;
+}
+
+.offcanvas .nav-link.active {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+  color: #60a5fa !important;
+  font-weight: 500;
+}
+
+.offcanvas .nav-link.active i {
+  color: #60a5fa;
+}
+
+.offcanvas .nav-link i {
+  font-size: 1.15rem;
+  min-width: 1.15rem;
+}

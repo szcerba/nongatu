@@ -1,0 +1,118 @@
+<section class="py-4">
+  <div class="container">
+    <h1 class="mb-4">Escanear Factura</h1>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-body text-center">
+            @if (!imagePreview()) {
+              <div class="upload-placeholder">
+                <i class="bi bi-camera"></i>
+                <p class="mt-2 mb-0">Seleccioná una imagen de factura</p>
+              </div>
+            } @else {
+              <img [src]="imagePreview()" class="img-fluid rounded" alt="Vista previa">
+            }
+            <div class="mt-3">
+              <label class="btn btn-primary">
+                <i class="bi bi-upload me-1"></i>Elegir Imagen
+                <input type="file" accept="image/*" class="d-none" (change)="onFileSelected($event)">
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        @if (loading()) {
+          <div class="text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status"></div>
+            <p class="text-muted">Procesando factura...</p>
+            <small class="text-muted">OCR + Análisis con IA</small>
+          </div>
+        }
+
+        @if (saved()) {
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill me-1"></i>Factura guardada correctamente.
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" (click)="goToHistory()">
+              <i class="bi bi-list-ul me-1"></i>Ver Historial
+            </button>
+            <button class="btn btn-outline-secondary" (click)="scanNew()">
+              <i class="bi bi-camera me-1"></i>Escanear Otra
+            </button>
+          </div>
+        }
+
+        @if (error() && !saved()) {
+          <div class="alert alert-danger">{{ error() }}</div>
+        }
+
+        @if (result(); as r) {
+          @if (r.parsed; as data) {
+            <div class="card">
+              <div class="card-header bg-success text-white">
+                <i class="bi bi-check-circle me-1"></i>Factura Parseada
+              </div>
+              <div class="card-body">
+                <table class="table table-sm">
+                  <tr><th>Comercio</th><td>{{ data.negocio }}</td></tr>
+                  <tr><th>RUC</th><td>{{ data.ruc }}</td></tr>
+                  <tr><th>Timbrado</th><td>{{ data.timbrado }}</td></tr>
+                  <tr><th>Fecha</th><td>{{ data.fecha_emision }}</td></tr>
+                </table>
+                <h6 class="mt-3">Productos</h6>
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Descripción</th>
+                      <th>Cant.</th>
+                      <th>Importe (₲)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of data.items; track $index) {
+                      <tr>
+                        <td>{{ item.descripcion }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td class="text-end">{{ formatGs(item.importe) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr class="fw-bold">
+                      <td colspan="2">Total</td>
+                      <td class="text-end">{{ formatGs(data.total) }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                @if (!saved()) {
+                  <button class="btn btn-success w-100" (click)="saveInvoice()" [disabled]="saving()">
+                    @if (saving()) {
+                      <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+                    } @else {
+                      <i class="bi bi-save me-1"></i>Guardar Factura
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          @if (r.error) {
+            <div class="alert alert-warning">{{ r.error }}</div>
+          }
+
+          <details class="mt-3">
+            <summary class="text-muted small">Texto OCR crudo</summary>
+            <pre class="bg-light p-3 mt-2 rounded small">{{ r.rawText }}</pre>
+          </details>
+        }
+      </div>
+    </div>
+  </div>
+</section>

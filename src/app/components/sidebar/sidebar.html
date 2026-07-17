@@ -1,0 +1,133 @@
+<!-- Desktop sidebar (md+) -->
+<nav class="sidebar d-none d-md-flex flex-column" [class.collapsed]="collapsed()">
+  <div class="sidebar-brand text-center" (click)="toggleSidebar.emit()" role="button">
+    <i class="bi bi-grid-1x2-fill"></i>
+    @if (!collapsed()) {
+      <span class="ms-2 fw-bold">Vivere</span>
+    }
+  </div>
+  <ul class="nav flex-column p-2 flex-grow-1">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/dashboard" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Dashboard' : null">
+        <i class="bi bi-speedometer2"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Dashboard</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/scan" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Scanner' : null">
+        <i class="bi bi-camera"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Escanear</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/history" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'History' : null">
+        <i class="bi bi-list-ul"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Historial</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/budget" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Budget' : null">
+        <i class="bi bi-pie-chart"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Presupuesto</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/alerts" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Alerts' : null">
+        <i class="bi bi-bell"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Alertas</span>
+        }
+      </a>
+    </li>
+  </ul>
+  <ul class="nav flex-column p-2 border-top border-secondary">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/about" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'About' : null">
+        <i class="bi bi-info-circle"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">About</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/contact" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Contact' : null">
+        <i class="bi bi-envelope"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Contact</span>
+        }
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- Mobile offcanvas sidebar (<md) -->
+<div class="offcanvas offcanvas-start d-md-none" id="sidebarOffcanvas" data-bs-backdrop="true">
+  <div class="offcanvas-header sidebar-brand">
+    <i class="bi bi-grid-1x2-fill"></i>
+    <span class="ms-2 fw-bold">Vivere</span>
+    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-2 d-flex flex-column">
+    <ul class="nav flex-column flex-grow-1">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-speedometer2"></i>
+          <span class="ms-2">Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/scan" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-camera"></i>
+          <span class="ms-2">Escanear</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/history" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-list-ul"></i>
+          <span class="ms-2">Historial</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/budget" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-pie-chart"></i>
+          <span class="ms-2">Presupuesto</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/alerts" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-bell"></i>
+          <span class="ms-2">Alertas</span>
+        </a>
+      </li>
+    </ul>
+    <ul class="nav flex-column border-top border-secondary pt-2">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/about" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-info-circle"></i>
+          <span class="ms-2">About</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/contact" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-envelope"></i>
+          <span class="ms-2">Contact</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

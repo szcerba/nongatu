@@ -1,1 +1,14 @@
-/* Footer styles */
+.app-footer {
+  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 1rem 1.5rem;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-text {
+  color: #64748b;
+  font-size: 0.875rem;
+}

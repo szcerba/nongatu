@@ -18,7 +18,12 @@
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "chart.js": "^4.5.1",
+    "dexie": "^4.4.4",
+    "ng2-charts": "^10.0.0",
     "rxjs": "~7.8.0",
+    "tesseract.js": "^7.0.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

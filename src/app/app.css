@@ -1,7 +1,24 @@
 :host {
   display: flex;
-  flex-direction: column;
   min-height: 100vh;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .main-wrapper {
+    margin-left: 250px;
+  }
+
+  .main-wrapper.sidebar-collapsed {
+    margin-left: 60px;
+  }
 }
 
 .content {

@@ -1,0 +1,216 @@
+<div class="container-fluid">
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+  } @else {
+    @let s = summary();
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Dashboard</h1>
+      <span class="text-muted">{{ currentMonth }}</span>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-3" (click)="goTo('/history')" style="cursor: pointer;">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <p class="small text-muted mb-1">Gasto Total del Mes</p>
+                <h3 class="mb-0 text-success">{{ formatGs(s?.total ?? 0) }}</h3>
+              </div>
+              <i class="bi bi-cash-stack fs-2 text-success opacity-50"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" (click)="goTo('/history')" style="cursor: pointer;">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <p class="small text-muted mb-1">Facturas</p>
+                <h3 class="mb-0 text-primary">{{ s?.invoiceCount ?? 0 }}</h3>
+              </div>
+              <i class="bi bi-receipt fs-2 text-primary opacity-50"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <p class="small text-muted mb-1">Ticket Promedio</p>
+                <h3 class="mb-0 text-info">{{ formatGs(s?.averageTicket ?? 0) }}</h3>
+              </div>
+              <i class="bi bi-graph-up-arrow fs-2 text-info opacity-50"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" (click)="goTo('/budget')" style="cursor: pointer;">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <div>
+                <p class="small text-muted mb-1">Presupuesto</p>
+                @if (totalBudget() > 0) {
+                  <h3 class="mb-0 text-warning">
+                    {{ ((s?.total ?? 0) / totalBudget() * 100) | number:'1.0-0' }}%
+                  </h3>
+                  <small class="text-muted">de {{ formatGs(totalBudget()) }}</small>
+                } @else {
+                  <h3 class="mb-0 text-warning">—</h3>
+                  <small class="text-muted">sin límite</small>
+                }
+              </div>
+              <i class="bi bi-pie-chart fs-2 text-warning opacity-50"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-7">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white">
+            <h6 class="mb-0">Gastos por Categoría</h6>
+          </div>
+          <div class="card-body">
+            @if (s && s.byCategory.length > 0) {
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Categoría</th>
+                      <th class="text-end">Total</th>
+                      <th class="text-end">%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (cat of s.byCategory; track cat.category.id) {
+                      <tr>
+                        <td>
+                          <span class="d-inline-block rounded-circle me-2" style="width:10px;height:10px;background:{{ getCategoryColor($index) }}"></span>
+                          {{ cat.category.name }}
+                        </td>
+                        <td class="text-end">{{ formatGs(cat.total) }}</td>
+                        <td class="text-end">
+                          <div class="d-flex align-items-center justify-content-end gap-2">
+                            <div class="progress" style="width:80px;height:8px;">
+                              <div class="progress-bar" role="progressbar" [style.width.%]="cat.percentage" [style.background-color]="getCategoryColor($index)"></div>
+                            </div>
+                            <small>{{ cat.percentage }}%</small>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                  <tfoot>
+                    <tr class="fw-bold">
+                      <td>Total</td>
+                      <td class="text-end">{{ formatGs(s.total) }}</td>
+                      <td class="text-end">100%</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            } @else {
+              <p class="text-muted text-center mb-0">Escaneá una factura para ver gastos.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white">
+            <h6 class="mb-0">Tendencia Mensual</h6>
+          </div>
+          <div class="card-body">
+            @if (s && s.monthlyTrend.length > 0) {
+              <div class="d-flex align-items-end gap-2" style="height: 150px;">
+                  @for (item of s.monthlyTrend; track item.month) {
+                    @let max = getMax(s.monthlyTrend.map(t => t.total));
+                    @let height = max > 0 ? (item.total / max * 100) : 0;
+                  <div class="flex-grow-1 d-flex flex-column align-items-center">
+                    <small class="mb-1" style="font-size: 0.65rem;">{{ formatGs(item.total) }}</small>
+                    <div class="w-100 rounded-top" [style.height.%]="height" [style.background]="'linear-gradient(180deg, #60a5fa, #3b82f6)'" style="min-height: 4px;"></div>
+                    <small class="mt-1 text-muted" style="font-size: 0.65rem;">{{ item.month.slice(5, 7) }}/{{ item.month.slice(2, 4) }}</small>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-muted text-center mb-0 mt-4">No hay datos suficientes.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Top Productos</h6>
+          </div>
+          <div class="card-body">
+            @if (s && s.topProducts.length > 0) {
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th class="text-end">Veces</th>
+                    <th class="text-end">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (prod of s.topProducts; track prod.name) {
+                    <tr>
+                      <td>{{ prod.name }}</td>
+                      <td class="text-end">{{ prod.count }}</td>
+                      <td class="text-end">{{ formatGs(prod.total) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <p class="text-muted text-center mb-0">Aún no hay productos registrados.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">Alertas</h6>
+            <a routerLink="/alerts" class="small">Ver todas</a>
+          </div>
+          <div class="card-body">
+            @if (alerts().length > 0) {
+              @for (alert of alerts().slice(0, 5); track alert.id) {
+                <div class="d-flex align-items-start gap-2 mb-2 pb-2 border-bottom">
+                  @if (alert.severity === 'high') {
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                  } @else if (alert.severity === 'medium') {
+                    <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                  } @else {
+                    <i class="bi bi-info-circle-fill text-info"></i>
+                  }
+                  <small>{{ alert.message }}</small>
+                </div>
+              }
+            } @else {
+              <p class="text-muted text-center mb-0">No hay alertas activas.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

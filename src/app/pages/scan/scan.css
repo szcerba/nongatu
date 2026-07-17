@@ -1,0 +1,15 @@
+.upload-placeholder {
+  padding: 3rem 1rem;
+  color: #94a3b8;
+}
+
+.upload-placeholder i {
+  font-size: 3rem;
+  display: block;
+}
+
+details pre {
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
