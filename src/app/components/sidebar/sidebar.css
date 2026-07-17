@@ -1,125 +1,67 @@
-:host {
-  display: block;
-}
+:host { display: block; }
 
-/* Desktop sidebar */
 .sidebar {
   width: 250px;
   min-height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: fixed; top: 0; left: 0;
   z-index: 100;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, background 0.25s ease;
   overflow: hidden;
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
-  border-right: 1px solid rgba(148, 163, 184, 0.1);
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg2) 100%);
+  border-right: 1px solid var(--border-light);
 }
-
-.sidebar.collapsed {
-  width: 60px;
-}
+.sidebar.collapsed { width: 60px; }
+.dark .sidebar { border-right-color: var(--border); }
 
 .sidebar .sidebar-brand {
-  cursor: pointer;
-  user-select: none;
+  cursor: pointer; user-select: none;
   padding: 1rem 1.25rem !important;
 }
-
-.sidebar .sidebar-brand:hover {
-  background-color: rgba(148, 163, 184, 0.1);
-}
-
-.sidebar .sidebar-brand i {
-  color: #60a5fa;
-}
-
-.sidebar.collapsed .sidebar-brand {
-  padding: 0.75rem !important;
-  justify-content: center;
-}
+.sidebar .sidebar-brand:hover { background: var(--surface-hover); }
+.sidebar .sidebar-brand i { color: var(--primary); }
+.sidebar.collapsed .sidebar-brand { padding: 0.75rem !important; justify-content: center; }
 
 .sidebar .nav-link {
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   padding: 0.625rem 1rem;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   white-space: nowrap;
   display: flex;
   align-items: center;
-  color: #94a3b8 !important;
+  color: var(--text-sec) !important;
   margin-bottom: 0.25rem;
 }
-
-.sidebar .nav-link:hover {
-  background-color: rgba(148, 163, 184, 0.1);
-  color: #e2e8f0 !important;
-}
-
+.sidebar .nav-link:hover { background: var(--surface-hover); color: var(--text) !important; }
 .sidebar .nav-link.active {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
-  color: #60a5fa !important;
-  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary) !important;
+  font-weight: 600;
 }
+.sidebar .nav-link.active i { color: var(--primary); }
+.sidebar.collapsed .nav-link { justify-content: center; padding: 0.625rem; }
+.sidebar .nav-link i { font-size: 1.15rem; min-width: 1.15rem; }
 
-.sidebar .nav-link.active i {
-  color: #60a5fa;
-}
-
-.sidebar.collapsed .nav-link {
-  justify-content: center;
-  padding: 0.625rem;
-}
-
-.sidebar .nav-link i {
-  font-size: 1.15rem;
-  min-width: 1.15rem;
-}
-
-/* Mobile offcanvas */
 .offcanvas {
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
-  color: #e2e8f0;
+  background: var(--bg2) !important;
+  color: var(--text);
 }
-
-.offcanvas .sidebar-brand {
-  padding: 1rem 1.25rem;
-  color: #e2e8f0;
-}
-
-.offcanvas .sidebar-brand i {
-  color: #60a5fa;
-}
-
-.offcanvas .offcanvas-body {
-  padding: 0.5rem 0.75rem !important;
-}
-
+.offcanvas .sidebar-brand { padding: 1rem 1.25rem; color: var(--text); }
+.offcanvas .sidebar-brand i { color: var(--primary); }
+.offcanvas .offcanvas-body { padding: 0.5rem 0.75rem !important; }
 .offcanvas .nav-link {
-  border-radius: 0.5rem;
+  border-radius: var(--radius-sm);
   padding: 0.625rem 1rem;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   display: flex;
   align-items: center;
-  color: #94a3b8 !important;
+  color: var(--text-sec) !important;
   margin-bottom: 0.25rem;
 }
-
-.offcanvas .nav-link:hover {
-  background-color: rgba(148, 163, 184, 0.1);
-  color: #e2e8f0 !important;
-}
-
+.offcanvas .nav-link:hover { background: var(--surface-hover); color: var(--text) !important; }
 .offcanvas .nav-link.active {
-  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
-  color: #60a5fa !important;
-  font-weight: 500;
+  background: var(--primary-light);
+  color: var(--primary) !important;
+  font-weight: 600;
 }
-
-.offcanvas .nav-link.active i {
-  color: #60a5fa;
-}
-
-.offcanvas .nav-link i {
-  font-size: 1.15rem;
-  min-width: 1.15rem;
-}
+.offcanvas .nav-link.active i { color: var(--primary); }
+.offcanvas .nav-link i { font-size: 1.15rem; min-width: 1.15rem; }

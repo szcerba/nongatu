@@ -1,0 +1,120 @@
+<section class="py-4">
+  <div class="container-fluid">
+    <h1 class="mb-4">Productos</h1>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-6">
+            <label class="form-label small">Buscar producto</label>
+            <input type="text" class="form-control" placeholder="Nombre del producto..."
+                   [value]="searchTerm()" (input)="updateSearch($event)">
+          </div>
+          <div class="col-md-3">
+            <small class="text-muted">{{ filteredProducts().length }} producto(s)</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (filteredProducts().length === 0) {
+      <div class="text-center py-5">
+        <i class="bi bi-box-seam" style="font-size: 3rem; color: var(--text-muted);"></i>
+        <p class="mt-2 text-muted">No hay productos registrados.</p>
+        <a routerLink="/scan" class="btn btn-primary">
+          <i class="bi bi-camera me-1"></i>Escanear Factura
+        </a>
+      </div>
+    } @else {
+      <div class="row g-3">
+        @for (product of filteredProducts(); track product.id) {
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 product-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="card-title mb-0 product-name">{{ product.name }}</h6>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-outline-primary p-0 px-1"
+                            (click)="startEdit(product)" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger p-0 px-1"
+                            (click)="deleteProduct(product)" title="Eliminar">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                @if (product.categoryId) {
+                  <span class="badge mb-2" [style.background-color]="getCategoryColor(product.categoryId)">
+                    {{ getCategoryName(product.categoryId) }}
+                  </span>
+                }
+                <div class="product-stats">
+                  <div class="stat">
+                    <span class="stat-label">Comprado</span>
+                    <span class="stat-value">{{ product.purchaseCount }}x</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Precio prom.</span>
+                    <span class="stat-value">{{ formatGs(product.averagePrice) }}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Total gastado</span>
+                    <span class="stat-value">{{ formatGs(product.totalSpent) }}</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-label">Última compra</span>
+                    <span class="stat-value">{{ formatDate(product.lastPurchased) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (editing(); as product) {
+      <div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Editar Producto</h5>
+              <button type="button" class="btn-close" (click)="cancelEdit()"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control"
+                       [value]="editName()" (input)="updateEditName($event)">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Categoría</label>
+                <select class="form-select"
+                        [value]="editCategoryId() ?? ''" (change)="updateEditCategory($event)">
+                  <option value="">Sin categoría</option>
+                  @for (cat of categories(); track cat.id) {
+                    <option [value]="cat.id">{{ cat.name }}</option>
+                  }
+                </select>
+              </div>
+              <div class="text-muted small">
+                <p class="mb-1">Compras: {{ product.purchaseCount }}x</p>
+                <p class="mb-1">Precio promedio: {{ formatGs(product.averagePrice) }}</p>
+                <p class="mb-0">Total gastado: {{ formatGs(product.totalSpent) }}</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancelar</button>
+              <button type="button" class="btn btn-primary" (click)="saveEdit()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

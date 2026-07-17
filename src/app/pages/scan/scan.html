@@ -69,23 +69,69 @@
                   <thead>
                     <tr>
                       <th>Descripción</th>
-                      <th>Cant.</th>
-                      <th>Importe (₲)</th>
+                      <th style="width: 90px;">Cant.</th>
+                      <th style="width: 110px;">Importe (₲)</th>
+                      <th style="width: 40px;"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    @for (item of data.items; track $index) {
+                    @for (item of editedItems(); track $index) {
                       <tr>
-                        <td>{{ item.descripcion }}</td>
-                        <td>{{ item.cantidad }}</td>
-                        <td class="text-end">{{ formatGs(item.importe) }}</td>
+                        <td>
+                          <input type="text" class="form-control form-control-sm"
+                                 [value]="item.descripcion"
+                                 (input)="updateItemDesc($index, $event)">
+                          @if (productMatches().get($index); as product) {
+                            <div class="product-match mt-1">
+                              <small class="text-success">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                <strong>{{ product.name }}</strong>
+                                — Precio: {{ formatGs(product.averagePrice) }}
+                                — Comprado {{ product.purchaseCount }}x
+                              </small>
+                              <div class="mt-1 d-flex gap-1">
+                                <button class="btn btn-xs btn-outline-success"
+                                        (click)="applyStoredData($index)">
+                                  <i class="bi bi-arrow-left"></i> Nombre
+                                </button>
+                                <button class="btn btn-xs btn-outline-success"
+                                        (click)="applyStoredPrice($index)">
+                                  <i class="bi bi-arrow-left"></i> Precio
+                                </button>
+                              </div>
+                            </div>
+                          }
+                        </td>
+                        <td>
+                          <input type="number" class="form-control form-control-sm"
+                                 [value]="item.cantidad"
+                                 (input)="updateItemQty($index, $event)"
+                                 step="0.01" min="0">
+                        </td>
+                        <td>
+                          <input type="number" class="form-control form-control-sm text-end"
+                                 [value]="item.importe"
+                                 (input)="updateItemAmount($index, $event)"
+                                 min="0">
+                        </td>
+                        <td>
+                          <button class="btn btn-sm btn-outline-danger p-0 px-1"
+                                  (click)="removeItem($index)">
+                            <i class="bi bi-x"></i>
+                          </button>
+                        </td>
                       </tr>
                     }
                   </tbody>
                   <tfoot>
                     <tr class="fw-bold">
-                      <td colspan="2">Total</td>
-                      <td class="text-end">{{ formatGs(data.total) }}</td>
+                      <td colspan="2">
+                        <button class="btn btn-sm btn-outline-primary" (click)="addItem()">
+                          <i class="bi bi-plus"></i> Agregar
+                        </button>
+                      </td>
+                      <td class="text-end">{{ formatGs(parsedTotal) }}</td>
+                      <td></td>
                     </tr>
                   </tfoot>
                 </table>

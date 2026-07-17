@@ -1,9 +1,5 @@
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
 }
-
-.badge {
-  font-weight: 500;
-  color: white;
-}
+.badge { font-weight: 500; color: white; }

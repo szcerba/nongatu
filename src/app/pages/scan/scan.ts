@@ -6,6 +6,8 @@ import { CategoryService } from '../../services/category.service';
 import { AlertService } from '../../services/alert.service';
 import type { ScanResult } from '../../models/receipt.model';
 import type { Invoice } from '../../models/invoice.model';
+import type { ReceiptItem } from '../../models/receipt.model';
+import type { Product } from '../../models/product.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,6 +18,8 @@ import { Router } from '@angular/router';
 export class Scan {
   loading = signal(false);
   result = signal<ScanResult | null>(null);
+  editedItems = signal<ReceiptItem[]>([]);
+  productMatches = signal<Map<number, Product | null>>(new Map());
   imagePreview = signal<string | null>(null);
   saved = signal(false);
   saving = signal(false);
@@ -51,15 +55,91 @@ export class Scan {
     return `₲ ${value.toLocaleString('es-PY')}`;
   }
 
+  updateItemDesc(index: number, event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    this.editedItems.update(items => {
+      const copy = [...items];
+      copy[index] = { ...copy[index], descripcion: val };
+      return copy;
+    });
+    this.checkProduct(index, val);
+  }
+
+  updateItemQty(index: number, event: Event) {
+    const val = parseFloat((event.target as HTMLInputElement).value) || 0;
+    this.editedItems.update(items => {
+      const copy = [...items];
+      copy[index] = { ...copy[index], cantidad: val };
+      return copy;
+    });
+  }
+
+  updateItemAmount(index: number, event: Event) {
+    const val = parseInt((event.target as HTMLInputElement).value) || 0;
+    this.editedItems.update(items => {
+      const copy = [...items];
+      copy[index] = { ...copy[index], importe: val };
+      return copy;
+    });
+  }
+
+  removeItem(index: number) {
+    this.editedItems.update(items => items.filter((_, i) => i !== index));
+    this.productMatches.update(map => {
+      const newMap = new Map(map);
+      newMap.delete(index);
+      return newMap;
+    });
+  }
+
+  addItem() {
+    this.editedItems.update(items => [
+      ...items,
+      { descripcion: '', cantidad: 1, importe: 0 }
+    ]);
+  }
+
+  applyStoredData(index: number) {
+    const product = this.productMatches().get(index);
+    if (!product) return;
+
+    this.editedItems.update(items => {
+      const copy = [...items];
+      copy[index] = {
+        ...copy[index],
+        descripcion: product.name,
+      };
+      return copy;
+    });
+  }
+
+  applyStoredPrice(index: number) {
+    const product = this.productMatches().get(index);
+    if (!product) return;
+
+    this.editedItems.update(items => {
+      const copy = [...items];
+      copy[index] = {
+        ...copy[index],
+        importe: product.averagePrice,
+      };
+      return copy;
+    });
+  }
+
+  get parsedTotal(): number {
+    return this.editedItems().reduce((sum, item) => sum + item.importe, 0);
+  }
+
   async saveInvoice() {
     const r = this.result();
-    if (!r?.parsed) return;
+    if (!r?.parsed || this.saving() || this.saved()) return;
     this.saving.set(true);
     this.error.set(null);
 
     try {
       const items = this.categoryService.categorizeItems(
-        r.parsed.items.map((item) => ({
+        this.editedItems().map((item) => ({
           invoiceId: 0,
           description: item.descripcion,
           quantity: item.cantidad,
@@ -73,7 +153,7 @@ export class Scan {
         timbrado: r.parsed.timbrado,
         date: r.parsed.fecha_emision,
         items,
-        total: r.parsed.total,
+        total: this.parsedTotal,
         createdAt: new Date(),
       };
 
@@ -94,9 +174,33 @@ export class Scan {
 
   scanNew() {
     this.result.set(null);
+    this.editedItems.set([]);
+    this.productMatches.set(new Map());
     this.imagePreview.set(null);
     this.saved.set(false);
     this.error.set(null);
+  }
+
+  private async checkProduct(index: number, name: string) {
+    if (!name || name.trim().length < 2) {
+      this.productMatches.update(map => {
+        const newMap = new Map(map);
+        newMap.delete(index);
+        return newMap;
+      });
+      return;
+    }
+    // First try exact match
+    let match = await this.invoiceService.findProductByName(name);
+    // If no exact match, try fuzzy
+    if (!match) {
+      match = await this.invoiceService.findSimilarProduct(name);
+    }
+    this.productMatches.update(map => {
+      const newMap = new Map(map);
+      newMap.set(index, match ?? null);
+      return newMap;
+    });
   }
 
   private async processImage(base64: string) {
@@ -108,7 +212,27 @@ export class Scan {
 
       try {
         const parsed = await this.parser.parse(rawText);
+        const items = parsed.items.map(i => ({ ...i }));
+        this.editedItems.set(items);
         this.result.set({ rawText, parsed });
+
+        // Check each item and auto-correct if found in database
+        for (let i = 0; i < items.length; i++) {
+          await this.checkProduct(i, items[i].descripcion);
+          const match = this.productMatches().get(i);
+          if (match) {
+            // Auto-correct: use stored name and quantity, keep OCR amount
+            this.editedItems.update(current => {
+              const copy = [...current];
+              copy[i] = {
+                ...copy[i],
+                descripcion: match.name,
+                cantidad: 1,
+              };
+              return copy;
+            });
+          }
+        }
       } catch {
         this.result.set({
           rawText,

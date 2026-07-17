@@ -1,13 +1,141 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --bg: #f1f5f9;
+  --bg2: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --surface-alt: #eef2f7;
+  --border: #d1d9e6;
+  --border-light: #e2e8f0;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: rgba(37, 99, 235, 0.08);
+  --secondary: #64748b;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #06b6d4;
+  --text: #0f172a;
+  --text-sec: #475569;
+  --text-muted: #94a3b8;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,0.1);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --transition: all 0.2s ease;
 }
+
+.dark, .dark body {
+  --bg: #0f1117;
+  --bg2: #171a23;
+  --surface: #1e2230;
+  --surface-hover: #262b3d;
+  --surface-alt: #262a3a;
+  --border: #2e3446;
+  --border-light: #252a3a;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(59, 130, 246, 0.12);
+  --secondary: #8a9bb5;
+  --success: #34d399;
+  --error: #f87171;
+  --warning: #fbbf24;
+  --info: #22d3ee;
+  --text: #e2e8f0;
+  --text-sec: #94a3b8;
+  --text-muted: #64748b;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,0.45);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f1f5f9;
-  color: #334155;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.card {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition) !important;
+}
+.card:hover {
+  box-shadow: var(--shadow-md) !important;
+  border-color: var(--primary-light) !important;
+  transform: translateY(-2px);
+}
+.card-header {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  color: var(--text) !important;
+  font-weight: 600;
+}
+.card-body { color: var(--text) !important; }
+
+.table { color: var(--text) !important; }
+.table th { color: var(--text-sec) !important; border-color: var(--border-light) !important; }
+.table td { border-color: var(--border-light) !important; }
+.table tbody tr:hover { background: var(--surface-hover) !important; }
+
+.btn-primary {
+  background: var(--primary) !important;
+  border: none !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+.btn-primary:hover { background: var(--primary-hover) !important; box-shadow: var(--shadow-md); }
+
+.btn-outline-primary {
+  border: 2px solid var(--primary) !important;
+  color: var(--primary) !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600;
+}
+.btn-outline-primary:hover { background: var(--primary-light) !important; }
+
+.progress { border-radius: 20px !important; background: var(--surface-alt) !important; }
+.progress-bar { border-radius: 20px !important; }
+
+.badge { border-radius: var(--radius-sm) !important; font-weight: 500 !important; }
+
+.alert {
+  border-radius: var(--radius-sm) !important;
+  border: none !important;
+  border-left: 4px solid var(--primary) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+.form-control, .form-select {
+  background: var(--surface) !important;
+  border: 2px solid var(--border-light) !important;
+  color: var(--text) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: var(--transition);
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-light) !important;
+}
+
+.modal-content {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.list-group-item {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border-light) !important;
 }

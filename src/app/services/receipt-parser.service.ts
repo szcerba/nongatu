@@ -19,25 +19,31 @@ export class ReceiptParserService {
           messages: [{
             role: 'user',
             content: `Eres un extractor de datos de comprobantes de compra paraguayos.
-A partir del siguiente texto OCR, extrae estos campos y devuelve SOLO JSON válido, sin texto adicional:
+A partir del siguiente texto OCR, extrae estos campos y devuelve SOLO JSON válido, sin texto adicional.
 
+REGLAS ESTRICTAS:
+1. La cantidad debe ser el número exacto que aparece en la columna "Cant" o "Cant." de la factura. NO infieras cantidad desde la descripción del producto.
+   - Ej: si Cant dice "1.0" la cantidad es 1.0 (número uno punto cero, no 10 ni 1).
+   - Si la cantidad usa coma como decimal (ej: "0,82") conviértela a punto (0.82).
+2. La descripción del producto debe copiarse lo más textual posible desde el OCR, sin interpretar ni corregir.
+   - Ej: si el OCR dice "Chorizo Franz a con Queso x5", la descripción debe ser exactamente esa.
+3. Importes en Guaraníes (₲). Son números enteros. "5.000" es 5000, "1.250" es 1250.
+
+Formato esperado:
 {
   "negocio": "nombre del comercio",
   "ruc": "00000000-0",
   "timbrado": "número de timbrado",
   "fecha_emision": "YYYY-MM-DD",
   "items": [
-    { "descripcion": "nombre del artículo", "cantidad": 1, "importe": 0 }
+    { "descripcion": "texto exacto del OCR", "cantidad": 1.0, "importe": 0 }
   ],
   "total": 0
 }
 
-Moneda: Guaraníes (₲). Los importes son números enteros, sin decimales.
-Normas:
-- cantidad e importe deben ser números enteros (no strings)
-- Si un valor no se encuentra, usa null
-- Si no hay items individuales, infiere del total
-- fecha_emision en formato ISO
+- cantidad puede ser decimal (ej: 0.82) o entero (ej: 1.0, 2, 5).
+- Si un valor no se encuentra, usa null.
+- fecha_emision en formato ISO (YYYY-MM-DD).
 
 Texto OCR:
 ${text}`

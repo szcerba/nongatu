@@ -5,7 +5,20 @@ import type { Product } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
+
+  async exists(invoice: Invoice): Promise<boolean> {
+    const match = await db.invoices
+      .where('business')
+      .equals(invoice.business)
+      .and((i) => i.ruc === invoice.ruc && i.date === invoice.date && i.total === invoice.total)
+      .first();
+    return match !== undefined;
+  }
+
   async save(invoice: Invoice): Promise<number> {
+    if (await this.exists(invoice)) {
+      throw new Error('Esta factura ya fue cargada');
+    }
     const id = await db.invoices.add(invoice);
     for (const item of invoice.items) {
       item.invoiceId = id as number;
@@ -58,6 +71,59 @@ export class InvoiceService {
   async getDistinctBusinesses(): Promise<string[]> {
     const invoices = await db.invoices.toArray();
     return [...new Set(invoices.map((i) => i.business))];
+  }
+
+  async findProductByName(name: string): Promise<Product | undefined> {
+    const normalized = name.toLowerCase().trim();
+    return db.products.where('normalized').equals(normalized).first();
+  }
+
+  async findSimilarProduct(name: string): Promise<Product | undefined> {
+    const normalized = name.toLowerCase().trim();
+    if (normalized.length < 3) return undefined;
+
+    const all = await db.products.toArray();
+    let bestMatch: Product | undefined;
+    let bestScore = 0;
+
+    for (const product of all) {
+      const score = this.similarity(normalized, product.normalized);
+      if (score > bestScore && score >= 0.6) {
+        bestScore = score;
+        bestMatch = product;
+      }
+    }
+
+    return bestMatch;
+  }
+
+  private similarity(a: string, b: string): number {
+    const wordsA = a.split(/\s+/);
+    const wordsB = b.split(/\s+/);
+    let matches = 0;
+
+    for (const wa of wordsA) {
+      for (const wb of wordsB) {
+        if (wa === wb || wb.includes(wa) || wa.includes(wb)) {
+          matches++;
+          break;
+        }
+      }
+    }
+
+    return matches / Math.max(wordsA.length, wordsB.length);
+  }
+
+  async getAllProducts(): Promise<Product[]> {
+    return db.products.toArray();
+  }
+
+  async updateProductById(id: number, changes: Partial<Product>): Promise<void> {
+    await db.products.update(id, changes);
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    await db.products.delete(id);
   }
 
   private async updateProduct(item: InvoiceItem): Promise<void> {

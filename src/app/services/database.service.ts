@@ -18,7 +18,7 @@ export class AppDatabase extends Dexie {
       invoices: '++id, business, date, createdAt',
       invoiceItems: '++id, invoiceId, categoryId',
       categories: '++id, name',
-      products: '++id, normalized',
+      products: '++id, normalized, purchaseCount',
       budgets: '++id, month',
       alerts: '++id, month, type, read, createdAt',
     });

@@ -1,21 +1,33 @@
 .mobile-header {
   display: flex;
   align-items: center;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--surface) 100%);
+  border-bottom: 1px solid var(--border-light);
+  gap: 0.75rem;
 }
-
-.mobile-toggle {
-  color: #e2e8f0;
+.mobile-toggle, .theme-toggle {
   background: none;
   border: none;
-  font-size: 1.35rem;
-  line-height: 1;
+  font-size: 1.3rem;
+  color: var(--text);
   cursor: pointer;
-  padding: 0;
+  padding: 0.25rem;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
 }
-
-.mobile-toggle:hover {
-  color: #60a5fa;
+.mobile-toggle:hover, .theme-toggle:hover {
+  background: var(--surface-hover);
+  color: var(--primary);
+}
+.mobile-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
 }

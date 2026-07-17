@@ -1,15 +1,15 @@
-.upload-placeholder {
-  padding: 3rem 1rem;
-  color: #94a3b8;
-}
+.upload-placeholder { padding: 3rem 1rem; color: var(--text-muted); }
+.upload-placeholder i { font-size: 3rem; display: block; }
+details pre { max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
 
-.upload-placeholder i {
-  font-size: 3rem;
-  display: block;
+.product-match {
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
 }
-
-details pre {
-  max-height: 200px;
-  overflow-y: auto;
-  white-space: pre-wrap;
+.btn-xs {
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  border-radius: 6px;
 }

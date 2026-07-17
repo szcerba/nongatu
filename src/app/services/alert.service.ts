@@ -55,7 +55,8 @@ export class AlertService {
       }
     }
 
-    const allProducts = await db.products.orderBy('purchaseCount').reverse().toArray();
+    const allProducts = await db.products.toArray();
+    allProducts.sort((a, b) => b.purchaseCount - a.purchaseCount);
     for (const prod of allProducts.slice(0, 5)) {
       if (prod.purchaseCount >= 3) {
         const msg = `Compraste "${prod.name}" ${prod.purchaseCount} veces. Total gastado: ₲${prod.totalSpent.toLocaleString('es-PY')}`;
@@ -71,12 +72,14 @@ export class AlertService {
     message: string,
     severity: BudgetAlert['severity'],
   ): Promise<void> {
-    const existing = await db.alerts
+    const allAlerts = await db.alerts
       .where('month')
       .equals(month)
-      .and((a) => a.message === message)
-      .first();
-    if (existing) return;
+      .toArray();
+    const exists = allAlerts.some(
+      (a) => a.type === type && a.categoryId === categoryId && a.message === message,
+    );
+    if (exists) return;
     await db.alerts.add({
       month,
       type,

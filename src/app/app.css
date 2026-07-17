@@ -1,6 +1,8 @@
 :host {
   display: flex;
   min-height: 100vh;
+  background: var(--bg);
+  transition: background 0.25s ease;
 }
 
 .main-wrapper {
@@ -8,7 +10,8 @@
   flex-direction: column;
   flex: 1;
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  transition: margin-left 0.3s ease, background 0.25s ease;
+  background: var(--bg);
 }
 
 @media (min-width: 768px) {
