@@ -1,0 +1,54 @@
+<section class="py-4">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Alertas</h1>
+      @if (alerts().length > 0) {
+        <button class="btn btn-outline-primary btn-sm" (click)="markAllRead()">
+          <i class="bi bi-check-all me-1"></i>Marcar todas leídas
+        </button>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else if (alerts().length === 0) {
+      <div class="text-center py-5">
+        <i class="bi bi-check-circle" style="font-size: 3rem; color: #22c55e;"></i>
+        <p class="mt-2 text-muted">No hay alertas pendientes.</p>
+      </div>
+    } @else {
+      <div class="list-group">
+        @for (alert of alerts(); track alert.id) {
+          <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+               [class.list-group-item-danger]="alert.severity === 'high'"
+               [class.list-group-item-warning]="alert.severity === 'medium'">
+            <div class="ms-2 me-auto">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                @if (alert.severity === 'high') {
+                  <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                  <span class="badge bg-danger">Alta</span>
+                } @else if (alert.severity === 'medium') {
+                  <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                  <span class="badge bg-warning text-dark">Media</span>
+                } @else {
+                  <i class="bi bi-info-circle-fill text-info"></i>
+                  <span class="badge bg-info text-dark">Baja</span>
+                }
+                @if (alert.categoryId && categories()[alert.categoryId]) {
+                  <span class="badge bg-secondary">{{ categories()[alert.categoryId] }}</span>
+                }
+              </div>
+              <p class="mb-1">{{ alert.message }}</p>
+              <small class="text-muted">{{ formatDate(alert.createdAt) }}</small>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary" (click)="markRead(alert.id!)" title="Marcar como leída">
+              <i class="bi bi-check-lg"></i>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,101 @@
+<section class="py-4">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Presupuesto Mensual</h1>
+      <span class="text-muted">{{ currentMonth }}</span>
+    </div>
+
+    @if (loading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    } @else {
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">Resumen</h5>
+            <span>{{ formatGs(totalSpent) }} / {{ formatGs(totalBudget) }}</span>
+          </div>
+          @if (totalBudget > 0) {
+            @let pct = totalSpent / totalBudget * 100;
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar" role="progressbar"
+                   [style.width.%]="pct"
+                   [class.bg-success]="pct <= 70"
+                   [class.bg-warning]="pct > 70 && pct <= 90"
+                   [class.bg-danger]="pct > 90"
+                   [attr.aria-valuenow]="pct"
+                   aria-valuemin="0" [attr.aria-valuemax]="100">
+                {{ pct | number:'1.0-0' }}%
+              </div>
+            </div>
+          } @else {
+            <p class="text-muted mb-0">Asigná presupuestos por categoría abajo.</p>
+          }
+        </div>
+      </div>
+
+      <div class="row g-3">
+        @for (cat of categories(); track cat.id) {
+          @let spent = spentByCategory.get(cat.id!) ?? 0;
+          @let budget = budgets().find(b => b.categoryId === cat.id);
+          @let limit = budget?.limit ?? 0;
+          @let pct = limit > 0 ? (spent / limit * 100) : 0;
+
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h6 class="mb-0">
+                    <i [class]="'bi me-1 ' + cat.icon" [style.color]="cat.color"></i>
+                    {{ cat.name }}
+                  </h6>
+                  @if (budget) {
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteBudget(budget.id!)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  }
+                </div>
+
+                @if (editingCategory() === cat.id) {
+                  <div class="mb-2">
+                    <label class="form-label small">Límite (₲)</label>
+                    <input type="number" class="form-control form-control-sm"
+                           [value]="editLimit()" (input)="updateEditLimit($event)" min="0">
+                    <div class="mt-2 d-flex gap-2">
+                      <button class="btn btn-sm btn-primary" (click)="saveBudget()">Guardar</button>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="cancelEdit()">Cancelar</button>
+                    </div>
+                  </div>
+                } @else {
+                  @if (limit > 0) {
+                    <div class="d-flex justify-content-between small mb-1">
+                      <span class="text-muted">{{ formatGs(spent) }} de {{ formatGs(limit) }}</span>
+                      <span [class.text-success]="pct <= 70" [class.text-warning]="pct > 70 && pct <= 90" [class.text-danger]="pct > 90">
+                        {{ pct | number:'1.0-0' }}%
+                      </span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div class="progress-bar" role="progressbar"
+                           [style.width.%]="pct"
+                           [class.bg-success]="pct <= 70"
+                           [class.bg-warning]="pct > 70 && pct <= 90"
+                           [class.bg-danger]="pct > 90"
+                           [style.background-color]="pct <= 70 ? '' : undefined">
+                      </div>
+                    </div>
+                  } @else {
+                    <p class="text-muted small mb-2">Sin presupuesto asignado.</p>
+                  }
+                  <button class="btn btn-sm btn-outline-primary mt-2" (click)="startEdit(cat.id!)">
+                    <i class="bi bi-pencil me-1"></i>{{ limit > 0 ? 'Editar' : 'Asignar' }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

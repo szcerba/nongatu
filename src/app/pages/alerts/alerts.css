@@ -1,0 +1,9 @@
+.list-group-item {
+  border-left: 4px solid transparent;
+}
+.list-group-item.list-group-item-danger {
+  border-left-color: #ef4444;
+}
+.list-group-item.list-group-item-warning {
+  border-left-color: #f59e0b;
+}
