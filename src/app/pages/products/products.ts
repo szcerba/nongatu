@@ -20,6 +20,7 @@ export class Products {
   editing = signal<Product | null>(null);
   editName = signal('');
   editCategoryId = signal<number | undefined>(undefined);
+  editLastUnitPrice = signal(0);
 
   constructor(
     private invoiceService: InvoiceService,
@@ -61,6 +62,7 @@ export class Products {
     this.editing.set(product);
     this.editName.set(product.name);
     this.editCategoryId.set(product.categoryId);
+    this.editLastUnitPrice.set(product.lastUnitPrice);
   }
 
   cancelEdit() {
@@ -76,6 +78,11 @@ export class Products {
     this.editCategoryId.set(val ? Number(val) : undefined);
   }
 
+  updateEditLastUnitPrice(event: Event) {
+    const val = parseFloat((event.target as HTMLInputElement).value) || 0;
+    this.editLastUnitPrice.set(val);
+  }
+
   async saveEdit() {
     const product = this.editing();
     if (!product || !product.id) return;
@@ -83,6 +90,7 @@ export class Products {
       name: this.editName(),
       normalized: this.editName().toLowerCase().trim(),
       categoryId: this.editCategoryId(),
+      lastUnitPrice: this.editLastUnitPrice(),
     });
     this.cancelEdit();
     await this.load();

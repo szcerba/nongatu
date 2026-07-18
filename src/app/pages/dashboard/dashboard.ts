@@ -33,7 +33,7 @@ export class Dashboard {
   }
 
   formatGs(value: number): string {
-    return `₲ ${value.toLocaleString('es-PY')}`;
+    return `${value.toLocaleString('es-PY')} ₲s.`;
   }
 
   getCategoryColor(index: number): string {

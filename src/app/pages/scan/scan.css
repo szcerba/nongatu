@@ -2,14 +2,9 @@
 .upload-placeholder i { font-size: 3rem; display: block; }
 details pre { max-height: 200px; overflow-y: auto; white-space: pre-wrap; }
 
-.product-match {
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: var(--radius-sm);
-  padding: 6px 8px;
+.border-success {
+  border: 2px solid #22c55e !important;
 }
-.btn-xs {
-  padding: 1px 6px;
-  font-size: 0.7rem;
-  border-radius: 6px;
+.border-warning {
+  border: 2px solid #eab308 !important;
 }

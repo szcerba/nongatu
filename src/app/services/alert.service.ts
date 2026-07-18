@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { db } from './database.service';
 import type { BudgetAlert } from '../models/budget.model';
 import { InvoiceService } from './invoice.service';
+import { ManualExpenseService } from './manual-expense.service';
 import { BudgetService } from './budget.service';
 import { CategoryService } from './category.service';
 
@@ -9,6 +10,7 @@ import { CategoryService } from './category.service';
 export class AlertService {
   constructor(
     private invoiceService: InvoiceService,
+    private manualExpenseService: ManualExpenseService,
     private budgetService: BudgetService,
     private categoryService: CategoryService,
   ) {}
@@ -30,7 +32,10 @@ export class AlertService {
   }
 
   async checkForAlerts(month: string): Promise<void> {
-    const invoices = await this.invoiceService.getByMonth(month);
+    const [invoices, manualExpenses] = await Promise.all([
+      this.invoiceService.getByMonth(month),
+      this.manualExpenseService.getByMonth(month),
+    ]);
     const budgets = await this.budgetService.getForMonth(month);
     const categories = await this.categoryService.getAll();
 
@@ -40,6 +45,9 @@ export class AlertService {
         const catId = item.categoryId ?? 0;
         totalSpentByCategory.set(catId, (totalSpentByCategory.get(catId) || 0) + item.amount);
       }
+    }
+    for (const exp of manualExpenses) {
+      totalSpentByCategory.set(exp.categoryId, (totalSpentByCategory.get(exp.categoryId) || 0) + exp.amount);
     }
 
     for (const budget of budgets) {

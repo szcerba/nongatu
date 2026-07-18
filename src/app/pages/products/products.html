@@ -59,6 +59,10 @@
                     <span class="stat-value">{{ product.purchaseCount }}x</span>
                   </div>
                   <div class="stat">
+                    <span class="stat-label">Precio unit.</span>
+                    <span class="stat-value">{{ formatGs(product.lastUnitPrice) }}</span>
+                  </div>
+                  <div class="stat">
                     <span class="stat-label">Precio prom.</span>
                     <span class="stat-value">{{ formatGs(product.averagePrice) }}</span>
                   </div>
@@ -101,6 +105,12 @@
                     <option [value]="cat.id">{{ cat.name }}</option>
                   }
                 </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Precio unitario última compra (₲)</label>
+                <input type="number" class="form-control"
+                       [value]="editLastUnitPrice()" (input)="updateEditLastUnitPrice($event)"
+                       min="0">
               </div>
               <div class="text-muted small">
                 <p class="mb-1">Compras: {{ product.purchaseCount }}x</p>

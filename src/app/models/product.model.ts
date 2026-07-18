@@ -6,5 +6,6 @@ export interface Product {
   purchaseCount: number;
   totalSpent: number;
   averagePrice: number;
+  lastUnitPrice: number;
   lastPurchased: string;
 }

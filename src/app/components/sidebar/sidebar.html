@@ -44,6 +44,15 @@
       </a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" routerLink="/manual-expense" routerLinkActive="active"
+         [attr.title]="collapsed() ? 'Manual' : null">
+        <i class="bi bi-pencil-square"></i>
+        @if (!collapsed()) {
+          <span class="ms-2">Gastos Manuales</span>
+        }
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" routerLink="/budget" routerLinkActive="active"
          [attr.title]="collapsed() ? 'Budget' : null">
         <i class="bi bi-pie-chart"></i>
@@ -128,6 +137,12 @@
         <a class="nav-link" routerLink="/products" routerLinkActive="active" data-bs-dismiss="offcanvas">
           <i class="bi bi-box-seam"></i>
           <span class="ms-2">Productos</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/manual-expense" routerLinkActive="active" data-bs-dismiss="offcanvas">
+          <i class="bi bi-pencil-square"></i>
+          <span class="ms-2">Gastos Manuales</span>
         </a>
       </li>
       <li class="nav-item">

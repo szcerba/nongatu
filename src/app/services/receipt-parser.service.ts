@@ -22,12 +22,15 @@ export class ReceiptParserService {
 A partir del siguiente texto OCR, extrae estos campos y devuelve SOLO JSON válido, sin texto adicional.
 
 REGLAS ESTRICTAS:
-1. La cantidad debe ser el número exacto que aparece en la columna "Cant" o "Cant." de la factura. NO infieras cantidad desde la descripción del producto.
-   - Ej: si Cant dice "1.0" la cantidad es 1.0 (número uno punto cero, no 10 ni 1).
-   - Si la cantidad usa coma como decimal (ej: "0,82") conviértela a punto (0.82).
-2. La descripción del producto debe copiarse lo más textual posible desde el OCR, sin interpretar ni corregir.
-   - Ej: si el OCR dice "Chorizo Franz a con Queso x5", la descripción debe ser exactamente esa.
-3. Importes en Guaraníes (₲). Son números enteros. "5.000" es 5000, "1.250" es 1250.
+1. Cada línea de producto tiene el formato: [cantidad] [descripción] [precio_unitario] [importe_total]
+   - Ejemplo OCR: "0,47 REMOLACHA X KILO 5.750 o 2.731"
+   - Esto significa: cantidad=0.47, descripcion="REMOLACHA X KILO", precio=5750, importe=2731
+   - El texto "o" u otros separadores entre el precio y el importe deben ignorarse.
+2. La cantidad usa coma como decimal (ej: "0,82" = 0.82, "0,47" = 0.47).
+3. Precio e importe usan punto como separador de miles (ej: "5.750" = 5750, "2.731" = 2731).
+4. Para cada línea de producto SIEMPRE extrae los 4 campos: cantidad, descripcion, precio e importe.
+   - No omitas el importe. Si ves un número después del precio, ese es el importe.
+   - Ej: "0,47 REMOLACHA X KILO 5.750 2.731" → {"cantidad": 0.47, "descripcion": "REMOLACHA X KILO", "precio": 5750, "importe": 2731}
 
 Formato esperado:
 {
@@ -36,12 +39,14 @@ Formato esperado:
   "timbrado": "número de timbrado",
   "fecha_emision": "YYYY-MM-DD",
   "items": [
-    { "descripcion": "texto exacto del OCR", "cantidad": 1.0, "importe": 0 }
+    { "descripcion": "texto exacto del OCR", "cantidad": 0.47, "precio": 5750, "importe": 2731 }
   ],
   "total": 0
 }
 
 - cantidad puede ser decimal (ej: 0.82) o entero (ej: 1.0, 2, 5).
+- precio es entero sin separador de miles (ej: 5750).
+- importe SIEMPRE debe extraerse, no lo calcules. Si ves el número en el texto, úsalo.
 - Si un valor no se encuentra, usa null.
 - fecha_emision en formato ISO (YYYY-MM-DD).
 

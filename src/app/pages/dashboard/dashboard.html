@@ -12,7 +12,7 @@
     </div>
 
     <div class="row g-3 mb-4">
-      <div class="col-md-3" (click)="goTo('/history')" style="cursor: pointer;">
+      <div class="col-md-4" (click)="goTo('/history')" style="cursor: pointer;">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -25,33 +25,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3" (click)="goTo('/history')" style="cursor: pointer;">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="small text-muted mb-1">Facturas</p>
-                <h3 class="mb-0 text-primary">{{ s?.invoiceCount ?? 0 }}</h3>
-              </div>
-              <i class="bi bi-receipt fs-2 text-primary opacity-50"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-body">
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="small text-muted mb-1">Ticket Promedio</p>
-                <h3 class="mb-0 text-info">{{ formatGs(s?.averageTicket ?? 0) }}</h3>
-              </div>
-              <i class="bi bi-graph-up-arrow fs-2 text-info opacity-50"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3" (click)="goTo('/budget')" style="cursor: pointer;">
+      <div class="col-md-4" (click)="goTo('/budget')" style="cursor: pointer;">
         <div class="card border-0 shadow-sm h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -164,7 +138,7 @@
                 <thead>
                   <tr>
                     <th>Producto</th>
-                    <th class="text-end">Veces</th>
+                    <th class="text-end">Cantidad</th>
                     <th class="text-end">Total</th>
                   </tr>
                 </thead>

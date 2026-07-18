@@ -3,6 +3,7 @@ export interface InvoiceItem {
   invoiceId: number;
   description: string;
   quantity: number;
+  unitPrice: number;
   amount: number;
   categoryId?: number;
   customCategoryName?: string;

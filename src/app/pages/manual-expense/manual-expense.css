@@ -1,0 +1,9 @@
+.list-group-item {
+  border-radius: var(--radius-sm) !important;
+  margin-bottom: 6px;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+}
+.list-group-item:hover {
+  background: var(--surface-hover);
+}

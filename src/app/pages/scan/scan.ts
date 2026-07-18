@@ -20,6 +20,7 @@ export class Scan {
   result = signal<ScanResult | null>(null);
   editedItems = signal<ReceiptItem[]>([]);
   productMatches = signal<Map<number, Product | null>>(new Map());
+  checkedItems = signal<Set<number>>(new Set());
   imagePreview = signal<string | null>(null);
   saved = signal(false);
   saving = signal(false);
@@ -74,11 +75,29 @@ export class Scan {
     });
   }
 
+  updateItemPrice(index: number, event: Event) {
+    const val = parseFloat((event.target as HTMLInputElement).value) || 0;
+    this.editedItems.update(items => {
+      const copy = [...items];
+      const importe = copy[index].importe;
+      copy[index] = {
+        ...copy[index],
+        precio: val,
+        cantidad: val > 0 && importe > 0 ? parseFloat((importe / val).toFixed(3)) : copy[index].cantidad,
+      };
+      return copy;
+    });
+  }
+
   updateItemAmount(index: number, event: Event) {
     const val = parseInt((event.target as HTMLInputElement).value) || 0;
     this.editedItems.update(items => {
       const copy = [...items];
-      copy[index] = { ...copy[index], importe: val };
+      copy[index] = {
+        ...copy[index],
+        importe: val,
+        cantidad: copy[index].precio > 0 ? parseFloat((val / copy[index].precio).toFixed(3)) : copy[index].cantidad,
+      };
       return copy;
     });
   }
@@ -90,41 +109,18 @@ export class Scan {
       newMap.delete(index);
       return newMap;
     });
+    this.checkedItems.update(set => {
+      const newSet = new Set(set);
+      newSet.delete(index);
+      return newSet;
+    });
   }
 
   addItem() {
     this.editedItems.update(items => [
       ...items,
-      { descripcion: '', cantidad: 1, importe: 0 }
+      { descripcion: '', cantidad: 1, precio: 0, importe: 0 }
     ]);
-  }
-
-  applyStoredData(index: number) {
-    const product = this.productMatches().get(index);
-    if (!product) return;
-
-    this.editedItems.update(items => {
-      const copy = [...items];
-      copy[index] = {
-        ...copy[index],
-        descripcion: product.name,
-      };
-      return copy;
-    });
-  }
-
-  applyStoredPrice(index: number) {
-    const product = this.productMatches().get(index);
-    if (!product) return;
-
-    this.editedItems.update(items => {
-      const copy = [...items];
-      copy[index] = {
-        ...copy[index],
-        importe: product.averagePrice,
-      };
-      return copy;
-    });
   }
 
   get parsedTotal(): number {
@@ -143,6 +139,7 @@ export class Scan {
           invoiceId: 0,
           description: item.descripcion,
           quantity: item.cantidad,
+          unitPrice: item.precio,
           amount: item.importe,
         }))
       );
@@ -176,6 +173,7 @@ export class Scan {
     this.result.set(null);
     this.editedItems.set([]);
     this.productMatches.set(new Map());
+    this.checkedItems.set(new Set());
     this.imagePreview.set(null);
     this.saved.set(false);
     this.error.set(null);
@@ -187,6 +185,11 @@ export class Scan {
         const newMap = new Map(map);
         newMap.delete(index);
         return newMap;
+      });
+      this.checkedItems.update(set => {
+        const newSet = new Set(set);
+        newSet.delete(index);
+        return newSet;
       });
       return;
     }
@@ -201,6 +204,11 @@ export class Scan {
       newMap.set(index, match ?? null);
       return newMap;
     });
+    this.checkedItems.update(set => {
+      const newSet = new Set(set);
+      newSet.add(index);
+      return newSet;
+    });
   }
 
   private async processImage(base64: string) {
@@ -212,7 +220,14 @@ export class Scan {
 
       try {
         const parsed = await this.parser.parse(rawText);
-        const items = parsed.items.map(i => ({ ...i }));
+        const items = parsed.items.map(i => {
+          const precio = i.precio || 0;
+          const importe = i.importe || 0;
+          const cantidad = importe > 0 && precio > 0
+            ? parseFloat((importe / precio).toFixed(3))
+            : i.cantidad || 0;
+          return { ...i, precio, importe, cantidad };
+        });
         this.editedItems.set(items);
         this.result.set({ rawText, parsed });
 
@@ -221,23 +236,30 @@ export class Scan {
           await this.checkProduct(i, items[i].descripcion);
           const match = this.productMatches().get(i);
           if (match) {
-            // Auto-correct: use stored name and quantity, keep OCR amount
+            const price = match.lastUnitPrice || match.averagePrice;
+            const importe = items[i].importe || 0;
+            const qty = price > 0 && importe > 0
+              ? parseFloat((importe / price).toFixed(3))
+              : items[i].cantidad || 1;
             this.editedItems.update(current => {
               const copy = [...current];
               copy[i] = {
                 ...copy[i],
                 descripcion: match.name,
-                cantidad: 1,
+                cantidad: qty,
+                precio: price,
+                importe: importe,
+                categoryId: match.categoryId,
               };
               return copy;
             });
           }
         }
-      } catch {
+      } catch (err) {
         this.result.set({
           rawText,
           parsed: null,
-          error: 'No se pudo estructurar con IA. Revisa el texto OCR.',
+          error: (err as Error).message,
         });
       }
     } catch (err) {

@@ -1,7 +1,9 @@
 export interface ReceiptItem {
   descripcion: string;
   cantidad: number;
+  precio: number;
   importe: number;
+  categoryId?: number;
 }
 
 export interface ReceiptData {

@@ -133,11 +133,14 @@ export class InvoiceService {
       .equals(normalized)
       .first();
 
+    const unitPrice = item.quantity > 0 ? Math.round(item.amount / item.quantity) : item.amount;
+
     if (existing) {
       await db.products.update(existing.id!, {
         purchaseCount: existing.purchaseCount + 1,
         totalSpent: existing.totalSpent + item.amount,
         averagePrice: Math.round((existing.totalSpent + item.amount) / (existing.purchaseCount + 1)),
+        lastUnitPrice: unitPrice,
         lastPurchased: new Date().toISOString(),
       });
     } else {
@@ -148,6 +151,7 @@ export class InvoiceService {
         purchaseCount: 1,
         totalSpent: item.amount,
         averagePrice: item.amount,
+        lastUnitPrice: unitPrice,
         lastPurchased: new Date().toISOString(),
       });
     }
