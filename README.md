@@ -1,59 +1,163 @@
-# Vivereapp
+# VivereApp
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.5.
+Aplicación Angular PWA para gestión de gastos del hogar con inteligencia artificial. Escanea recibos, categoriza productos y genera analytics mensuales con soporte offline.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+| Capa          | Tecnología                               |
+|---------------|------------------------------------------|
+| Framework     | Angular 22                               |
+| UI            | Ionic 8 + CSS personalizado              |
+| Base de datos | IndexedDB (via `ngx-indexed-db`)         |
+| Escaneo       | API Groq (Llama 3.2 90B Vision) para OCR |
+| Gráficos      | Chart.js + ng2-charts                    |
+| PWA           | @angular/pwa con service worker          |
 
-```bash
-ng serve
+## Estructura del proyecto
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── sidebar/              # Navegación lateral responsive
+│   │   └── typewriter/           # Efecto typewriter para textos
+│   ├── models/
+│   │   ├── invoice.model.ts      # Invoice, InvoiceItem, InvoiceProduct
+│   │   ├── product.model.ts      # Product (name, category, lastUnitPrice, averagePrice, totalSpent)
+│   │   ├── receipt.model.ts      # ReceiptItem (cantidad, descripcion, precio, importe)
+│   │   └── manual-expense.model.ts # ManualExpense (description, amount, categoryId, date)
+│   ├── pages/
+│   │   ├── dashboard/            # Resumen mensual con gráficos y alertas
+│   │   ├── scan/                 # Escaneo de recibos con IA
+│   │   ├── invoices/             # Historial de facturas
+│   │   ├── products/             # CRUD de productos (catálogo)
+│   │   └── manual-expense/       # Gastos manuales no asociados a facturas
+│   ├── services/
+│   │   ├── database.service.ts   # Inicialización y migraciones de IndexedDB
+│   │   ├── invoice.service.ts    # CRUD de facturas y productos
+│   │   ├── receipt-parser.service.ts # Prompt engineering para OCR de recibos
+│   │   ├── analytics.service.ts  # Cálculos de totales, histórico y alertas
+│   │   ├── alert.service.ts      # Alertas de presupuesto por categoría
+│   │   ├── manual-expense.service.ts # CRUD de gastos manuales
+│   │   └── storage.service.ts    # Cache local de imágenes
+│   ├── app.routes.ts             # Definición de rutas
+│   └── app.config.ts             # Configuración de providers
+├── styles.css                    # Variables CSS globales (tema verde)
+└── index.html
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Modelo de datos
 
-## Code scaffolding
+### Invoice
+| Campo    | Tipo          | Descripción                        |
+|----------|---------------|------------------------------------|
+| id       | number        | Auto-increment (IndexedDB)         |
+| date     | string        | Fecha ISO de la compra             |
+| total    | number        | Suma de importes de la factura     |
+| items    | InvoiceItem[] | Artículos escaneados               |
+| imageUrl | string        | URL del blob de la imagen original |
+| month    | string        | "YYYY-MM" para consultas rápidas   |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### InvoiceItem / InvoiceProduct
+| Campo       | Tipo   | Descripción                                      |
+|-------------|--------|--------------------------------------------------|
+| cantidad    | number | Cantidad comprada (derivada de importe / precio) |
+| descripcion | string | Nombre del producto                              |
+| precio      | number | Precio unitario (del ticket)                     |
+| importe     | number | Importe total del renglón (source of truth)      |
+| categoria   | string | Categoría asignada (automática o manual)         |
+| unitPrice   | number | Alias de precio (según contexto)                 |
+
+### Product
+| Campo          | Tipo   | Descripción                              |
+| -------------- | ------ | ---------------------------------------- |
+| name           | string | Nombre normalizado del producto          |
+| category       | string | Categoría                                |
+| lastUnitPrice  | number | Precio unitario de la última compra      |
+| averagePrice   | number | Precio promedio histórico                |
+| totalSpent     | number | Gasto total histórico                    |
+| totalPurchases | number | Veces que se compró                      |
+| lastPurchase   | string | Fecha ISO de la última compra            |
+
+### ManualExpense
+| Campo       | Tipo   | Descripción                        |
+| ----------- | ------ | ---------------------------------- |
+| id          | number | Auto-increment (IndexedDB)         |
+| description | string | Descripción del gasto              |
+| amount      | number | Monto                              |
+| categoryId  | string | Categoría asociada                 |
+| date        | string | Fecha ISO                          |
+| notes       | string | Notas opcionales                   |
+| createdAt   | string | Fecha ISO de creación              |
+
+## Flujo de escaneo
+
+1. El usuario captura o selecciona una imagen de recibo
+2. Se envía a Groq API (Llama 3.2 90B Vision) con un prompt específico para formato paraguayo: `[cantidad] [descripcion] [precio] [importe]`
+3. El parser extrae items en formato JSON con thousand-separator dots
+4. Para cada item, se busca el producto en la DB por nombre normalizado
+5. **Autocorrección**: si el producto existe, se usa el nombre almacenado + `lastUnitPrice` (de DB) como precio, y se recalcula `cantidad = importe / precio`. El importe del OCR se preserva siempre.
+6. Si no existe, se crea un nuevo producto con los valores del OCR
+7. Se asignan categorías automáticamente (comida, limpieza, etc.)
+8. Se guarda la factura completa en IndexedDB
+
+### Indicadores visuales en escaneo
+
+- **Borde del campo descripción**: verde si el producto existe en DB, amarillo si es nuevo
+- **Borde del campo precio**: verde si coincide con `lastUnitPrice` almacenado, amarillo si difiere o el producto es nuevo
+
+## Reglas de negocio
+
+- **Cantidad**: siempre derivada de `importe / precio`. `importe` es el source of truth.
+- **Gastos manuales**: se incluyen en totales mensuales, dashboard, analytics y alertas de presupuesto.
+- **Alertas**: se comparan gastos reales (facturas + manuales) contra presupuestos por categoría.
+- **Errores de API**: los errores de Groq (rate limit, timeout, etc.) se muestran textualmente, sin mensajes genéricos.
+
+## Instalación
 
 ```bash
-ng generate component component-name
+git clone <repo-url>
+cd vivereapp
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Desarrollo
 
 ```bash
-ng generate --help
+ng serve          # Servidor local → http://localhost:4200
 ```
 
-## Building
-
-To build the project run:
+## Build
 
 ```bash
-ng build
+ng build          # Build de producción en dist/
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Producción
 
 ```bash
-ng test
+ng build --configuration production
 ```
 
-## Running end-to-end tests
+Los archivos estáticos se sirven desde `dist/vivereapp/browser/`. La PWA con service worker funciona offline una vez visitada.
 
-For end-to-end (e2e) testing, run:
+## Variables de entorno
 
-```bash
-ng e2e
+Crear `src/environments/environment.ts`:
+
+```ts
+export const environment = {
+  production: false,
+  groqApiKey: 'tu-api-key-de-groq'
+};
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+La API key de Groq se necesita para el escaneo de recibos.
 
-## Additional Resources
+## Dependencias principales
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `@ionic/angular` — UI toolkit
+- `ngx-indexed-db` — IndexedDB wrapper
+- `chart.js` + `ng2-charts` — gráficos
+- `@angular/pwa` — service worker + manifest
+- `@angular/service-worker` — caching offline
