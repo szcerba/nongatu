@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "vivereapp": {
+    "nongatu": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "vivereapp:build:production"
+              "buildTarget": "nongatu:build:production"
             },
             "development": {
-              "buildTarget": "vivereapp:build:development"
+              "buildTarget": "nongatu:build:development"
             }
           },
           "defaultConfiguration": "development"

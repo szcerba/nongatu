@@ -15,6 +15,6 @@ export class Sidebar {
   toggleTheme() {
     document.body.classList.toggle('dark');
     this.isDark.set(document.body.classList.contains('dark'));
-    localStorage.setItem('vivere-theme', this.isDark() ? 'dark' : 'light');
+    localStorage.setItem('nongatu-theme', this.isDark() ? 'dark' : 'light');
   }
 }

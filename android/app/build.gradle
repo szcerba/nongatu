@@ -4,7 +4,7 @@ android {
     namespace = "com.vivere.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.vivere.app"
+        applicationId "com.nongatu.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

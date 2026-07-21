@@ -1,4 +1,4 @@
-# VivereApp
+# Ñongatu
 
 Aplicación Angular PWA para gestión de gastos del hogar con inteligencia artificial. Escanea recibos, categoriza productos y genera analytics mensuales con soporte offline.
 
@@ -117,7 +117,7 @@ src/
 
 ```bash
 git clone <repo-url>
-cd vivereapp
+cd nongatu
 npm install
 ```
 
@@ -139,7 +139,7 @@ ng build          # Build de producción en dist/
 ng build --configuration production
 ```
 
-Los archivos estáticos se sirven desde `dist/vivereapp/browser/`. La PWA con service worker funciona offline una vez visitada.
+Los archivos estáticos se sirven desde `dist/nongatu/browser/`. La PWA con service worker funciona offline una vez visitada.
 
 ## Variables de entorno
 

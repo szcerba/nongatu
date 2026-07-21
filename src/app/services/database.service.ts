@@ -15,7 +15,7 @@ export class AppDatabase extends Dexie {
   manualExpenses!: Table<ManualExpense, number>;
 
   constructor() {
-    super('VivereDB');
+    super('ÑongatuDB');
     this.version(3).stores({
       invoices: '++id, business, date, createdAt',
       invoiceItems: '++id, invoiceId, categoryId',

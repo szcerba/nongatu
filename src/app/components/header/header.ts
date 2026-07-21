@@ -11,11 +11,11 @@ export class Header {
   toggleTheme() {
     document.body.classList.toggle('dark');
     this.isDark.set(document.body.classList.contains('dark'));
-    localStorage.setItem('vivere-theme', this.isDark() ? 'dark' : 'light');
+    localStorage.setItem('nongatu-theme', this.isDark() ? 'dark' : 'light');
   }
 
   ngOnInit() {
-    const saved = localStorage.getItem('vivere-theme');
+    const saved = localStorage.getItem('nongatu-theme');
     if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.body.classList.add('dark');
       this.isDark.set(true);
