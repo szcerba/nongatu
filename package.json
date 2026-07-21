@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node -e \"require('fs').writeFileSync('src/environments/environment.ts', 'export const environment = { production: true, groqApiKey: process.env.groqApiKey || \\\"\\\" };');\" && ng build",
+    "build": "node -e \"const f=require('fs');const key=process.env.groqApiKey||'';f.writeFileSync('src/environments/environment.ts','export const environment = {production: true,groqApiKey:\\\"'+key+'\\\"};');\" && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
