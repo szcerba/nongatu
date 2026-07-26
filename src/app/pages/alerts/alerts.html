@@ -31,10 +31,10 @@
                   <span class="badge bg-danger">Alta</span>
                 } @else if (alert.severity === 'medium') {
                   <i class="bi bi-exclamation-circle-fill text-warning"></i>
-                  <span class="badge bg-warning text-dark">Media</span>
+                  <span class="badge bg-warning text-white">Media</span>
                 } @else {
                   <i class="bi bi-info-circle-fill text-info"></i>
-                  <span class="badge bg-info text-dark">Baja</span>
+                  <span class="badge bg-info text-white">Baja</span>
                 }
                 @if (alert.categoryId && categories()[alert.categoryId]) {
                   <span class="badge bg-secondary">{{ categories()[alert.categoryId] }}</span>

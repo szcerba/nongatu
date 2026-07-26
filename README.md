@@ -157,7 +157,47 @@ La API key de Groq se necesita para el escaneo de recibos.
 ## Dependencias principales
 
 - `@ionic/angular` — UI toolkit
-- `ngx-indexed-db` — IndexedDB wrapper
-- `chart.js` + `ng2-charts` — gráficos
+- `dexie` — IndexedDB wrapper
 - `@angular/pwa` — service worker + manifest
 - `@angular/service-worker` — caching offline
+
+---
+
+## TODO
+
+### 🔴 Críticos
+
+- [ ] **Backend proxy para Groq API** — La clave de Groq queda expuesta en el JS compilado del browser. Mover la llamada a un serverless function (Cloudflare Worker, Netlify Function, etc.) y eliminar la key del frontend.
+- [ ] **DB via DI** — `db` se exporta como singleton directo (`export const db = new AppDatabase()`). Envolver en un `@Injectable({ providedIn: 'root' })` para habilitar inyección de dependencias y tests mockeables.
+- [ ] **Fix N+1 queries en InvoiceService** — `getAllWithItems()` carga todas las facturas y luego hace N queries por cada una para traer sus items. Usar batch queries o joins con Dexie.
+
+### 🟠 Altos
+
+- [ ] **Lazy loading en rutas** — Las 11 páginas se cargan eager. Usar `loadChildren` para mejora de tiempo de carga inicial.
+- [ ] **Cache de Tesseract worker** — El worker y modelo (~15MB) se descargan del CDN en cada escaneo. Reutilizar la instancia.
+- [ ] **Queries indexadas en AnalyticsService** — `getMonthsRange()` y `getMonthSummary()` cargan TODA la base y filtran en JS. Usar queries indexadas por `month`.
+- [ ] **Tests de servicios** — Solo 1 test de creación del componente raíz. Vitest está configurado pero no se usa. Agregar tests para CategoryService, InvoiceService, ReceiptParserService.
+
+### 🟡 Medios
+
+- [ ] **Extraer `formatGs()` como pipe** — Duplicado en 6+ componentes. Crear un `CurrencyGsPipe` compartido.
+- [ ] **Unificar theme toggle** — Header y Sidebar ambos tienen `isDark()` y `toggleTheme()` independientes. Crear un `ThemeService` compartido.
+- [ ] **Eliminar sidebar duplicada** — Menú desktop y mobile son copias completas del HTML. Unificar con un `@if` o componente reutilizable.
+- [ ] **Eliminar dependencias muertas** — `chart.js` y `ng2-charts` instalados pero no usados. Quitar del `package.json`.
+- [ ] **Pinning de versiones Capacitor** — `@capacitor/core: latest` sin pinning. Fijar versión específica.
+- [ ] **Tree-shakear Bootstrap** — Carga bundle completo (~200KB+) para grid, cards y unos utilities. Usar SCSS parciales.
+- [ ] **Convertir getters a `computed()`** — En History, Budget y ManualExpense, los getters crean nuevos `computed()` en cada acceso. Mover a nivel de clase.
+- [ ] **Handler global de errores** — No hay `ErrorHandler` provider ni interceptors HTTP. Agregar manejo centralizado.
+- [ ] **HttpClient en vez de `fetch`** — `receipt-parser.service.ts` usa `fetch()` directo. Migrar a `HttpClient` para interceptors, logging y error handling.
+- [ ] **`strict: true` en tsconfig** — El proyecto usa strictness selectivo en vez de full strict mode.
+- [ ] **Implementar `getCurrentMonthAlerts()`** — En AnalyticsService retorna siempre `{ exceeded: false, percentage: 0 }`. Código muerto/placeholder.
+- [ ] **Validación de tamaño en uploads** — No hay validación de tamaño de imagen. Un archivo de 50MB se procesaría directamente.
+- [ ] **Validación de schema en LLM output** — `JSON.parse()` del output del LLM sin validación. Un JSON malformado rompe la app.
+
+### 🟢 Bajo
+
+- [ ] **Renombrar campos español→inglés en modelos** — `receipt.model.ts` usa campos en español (`negocio`, `ruc`, `descripcion`) mientras `invoice.model.ts` usa inglés. Unificar.
+- [ ] **Separar ProductService de InvoiceService** — `InvoiceService` maneja facturas Y productos. Debería ser un `ProductService` separado.
+- [ ] **Virtual scrolling en historial y productos** — Renderiza todos los items a la vez. Usar `@angular/cdk/virtual-scroll-viewport`.
+- [ ] **`updatedAt` en modelos** — Ninguna tabla tiene campo de actualización. Agregar donde aplique.
+- [ ] **Indexes compuestos en budgets** — `budgets` no tiene index compuesto `(month, categoryId)` para el lookup común.

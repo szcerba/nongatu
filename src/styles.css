@@ -48,6 +48,22 @@
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.25);
   --shadow-md: 0 4px 14px rgba(0,0,0,0.35);
   --shadow-lg: 0 8px 28px rgba(0,0,0,0.45);
+  --bs-body-color: #e2e8f0;
+  --bs-emphasis-color: #e2e8f0;
+  --bs-secondary-color: #94a3b8;
+  --bs-tertiary-color: #64748b;
+  --bs-body-bg: #0f1117;
+  --bs-body-color-rgb: 226, 232, 240;
+  --bs-light-rgb: 30, 34, 48;
+  --bs-dark-rgb: 226, 232, 240;
+  --bs-link-color: #34d399;
+  --bs-link-hover-color: #6ee7b7;
+  --bs-border-color: #252a3a;
+  --bs-card-bg: #1e2230;
+  --bs-modal-bg: #1e2230;
+  --bs-modal-border-color: #252a3a;
+  --bs-offcanvas-bg: #1e2230;
+  --bs-offcanvas-color: #e2e8f0;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -80,7 +96,7 @@ body {
 }
 .card-body { color: var(--text) !important; }
 
-.table { color: var(--text) !important; }
+.table { color: var(--text) !important; --bs-table-bg: transparent !important; --bs-table-striped-bg: var(--surface-alt) !important; --bs-table-hover-bg: var(--surface-hover) !important; }
 .table th { color: var(--text-sec) !important; border-color: var(--border-light) !important; }
 .table td { border-color: var(--border-light) !important; }
 .table tbody tr:hover { background: var(--surface-hover) !important; }
@@ -139,3 +155,17 @@ body {
   color: var(--text) !important;
   border-color: var(--border-light) !important;
 }
+
+.dark .text-muted { color: var(--text-muted) !important; }
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: var(--text) !important; }
+.dark p, .dark span, .dark li, .dark td, .dark th, .dark label, .dark small { color: var(--text) !important; }
+.dark a { color: var(--primary) !important; }
+.dark a:hover { color: var(--primary-hover) !important; }
+.dark .form-label, .dark .form-text, .dark .form-check-label { color: var(--text) !important; }
+.dark .offcanvas { background: var(--surface) !important; color: var(--text) !important; }
+.dark .offcanvas-header .btn-close { filter: invert(1); }
+.dark .dropdown-menu { background: var(--surface) !important; color: var(--text) !important; border-color: var(--border-light) !important; }
+.dark .dropdown-item { color: var(--text) !important; }
+.dark .dropdown-item:hover { background: var(--surface-hover) !important; color: var(--primary) !important; }
+.dark .nav-link { color: var(--text) !important; }
+.dark .nav-link:hover, .dark .nav-link.active { color: var(--primary) !important; }
