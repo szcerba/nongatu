@@ -103,7 +103,41 @@
         }
       </button>
     </li>
+    <li class="nav-item">
+      <button class="nav-link w-100 text-start" (click)="exportData()" [disabled]="exporting()" style="background:none;border:none;"
+         [attr.title]="collapsed() ? 'Exportar' : null">
+        @if (exporting()) {
+          <i class="bi bi-hourglass-split"></i>
+        } @else {
+          <i class="bi bi-download"></i>
+        }
+        @if (!collapsed()) {
+          <span class="ms-2">{{ exporting() ? 'Exportando...' : 'Exportar CSV' }}</span>
+        }
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link w-100 text-start" (click)="triggerImport()" [disabled]="importing()" style="background:none;border:none;"
+         [attr.title]="collapsed() ? 'Importar' : null">
+        @if (importing()) {
+          <i class="bi bi-hourglass-split"></i>
+        } @else {
+          <i class="bi bi-upload"></i>
+        }
+        @if (!collapsed()) {
+          <span class="ms-2">{{ importing() ? 'Importando...' : 'Importar CSV' }}</span>
+        }
+      </button>
+    </li>
+    @if (importResult()) {
+      <li class="nav-item">
+        <small class="px-2 d-block" [class.text-success]="!importResult()!.startsWith('Error')" [class.text-danger]="importResult()!.startsWith('Error')">
+          {{ importResult() }}
+        </small>
+      </li>
+    }
   </ul>
+  <input #fileInput type="file" accept=".csv" (change)="onFileSelected($event)" style="display:none;">
 </nav>
 
 <!-- Mobile offcanvas sidebar (<md) -->
@@ -181,6 +215,33 @@
           <span class="ms-2">{{ isDark() ? 'Claro' : 'Oscuro' }}</span>
         </button>
       </li>
+      <li class="nav-item">
+        <button class="nav-link w-100 text-start" (click)="exportData()" [disabled]="exporting()" data-bs-dismiss="offcanvas" style="background:none;border:none;">
+          @if (exporting()) {
+            <i class="bi bi-hourglass-split"></i>
+          } @else {
+            <i class="bi bi-download"></i>
+          }
+          <span class="ms-2">{{ exporting() ? 'Exportando...' : 'Exportar CSV' }}</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link w-100 text-start" (click)="triggerImport()" [disabled]="importing()" data-bs-dismiss="offcanvas" style="background:none;border:none;">
+          @if (importing()) {
+            <i class="bi bi-hourglass-split"></i>
+          } @else {
+            <i class="bi bi-upload"></i>
+          }
+          <span class="ms-2">{{ importing() ? 'Importando...' : 'Importar CSV' }}</span>
+        </button>
+      </li>
+      @if (importResult()) {
+        <li class="nav-item">
+          <small class="px-2 d-block" [class.text-success]="!importResult()!.startsWith('Error')" [class.text-danger]="importResult()!.startsWith('Error')">
+            {{ importResult() }}
+          </small>
+        </li>
+      }
     </ul>
   </div>
 </div>
