@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node -e \"const f=require('fs');const key=process.env.groqApiKey||'';const gcid=process.env.googleClientId||'';f.writeFileSync('src/environments/environment.ts','export const environment = {production: true,groqApiKey:\\\"'+key+'\\\",googleClientId:\\\"'+gcid+'\\\"};');\" && ng build",
+    "build": "node -e \"const f=require('fs');const ex=f.readFileSync('src/environments/environment.example.ts','utf8');const exKey=(ex.match(/groqApiKey:\\s*'([^']+)'/)?.[1])||'';const exGcid=(ex.match(/googleClientId:\\s*'([^']+)'/)?.[1])||'';const key=process.env.groqApiKey||exKey;const gcid=process.env.googleClientId||exGcid;f.writeFileSync('src/environments/environment.ts','export const environment = {production: true,groqApiKey:\\\"'+key+'\\\",googleClientId:\\\"'+gcid+'\\\"};');\" && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

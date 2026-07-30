@@ -171,6 +171,51 @@
         }
       </button>
     </li>
+    @if (isAuthenticated()) {
+      <li class="nav-item">
+        <button class="nav-link w-100 text-start" (click)="backupToDrive()" [disabled]="backupToDriveLoading()" style="background:none;border:none;"
+           [attr.title]="collapsed() ? 'Backup Drive' : null">
+          @if (backupToDriveLoading()) {
+            <i class="bi bi-hourglass-split"></i>
+          } @else {
+            <i class="bi bi-cloud-arrow-up"></i>
+          }
+          @if (!collapsed()) {
+            <span class="ms-2">{{ backupToDriveLoading() ? 'Subiendo...' : 'Backup a Drive' }}</span>
+          }
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link w-100 text-start" (click)="showDriveBackups()" [disabled]="restoreFromDriveLoading()" style="background:none;border:none;"
+           [attr.title]="collapsed() ? 'Restaurar Drive' : null">
+          @if (restoreFromDriveLoading()) {
+            <i class="bi bi-hourglass-split"></i>
+          } @else {
+            <i class="bi bi-cloud-arrow-down"></i>
+          }
+          @if (!collapsed()) {
+            <span class="ms-2">{{ showDriveFiles() ? 'Ocultar backups' : 'Restaurar de Drive' }}</span>
+          }
+        </button>
+      </li>
+      @if (showDriveFiles() && driveFiles().length === 0) {
+        <li class="nav-item px-2">
+          <small class="text-muted">Sin backups en Drive</small>
+        </li>
+      }
+      @if (showDriveFiles() && driveFiles().length > 0) {
+        @for (f of driveFiles(); track f.id) {
+          <li class="nav-item">
+            <button class="nav-link w-100 text-start" (click)="restoreFromDrive(f.id)" style="background:none;border:none;font-size:0.85rem;">
+              <i class="bi bi-file-earmark-arrow-down"></i>
+              @if (!collapsed()) {
+                <span class="ms-2">{{ f.name }}</span>
+              }
+            </button>
+          </li>
+        }
+      }
+    }
     @if (importResult()) {
       <li class="nav-item">
         <small class="px-2 d-block" [class.text-success]="!importResult()!.startsWith('Error')" [class.text-danger]="importResult()!.startsWith('Error')">
@@ -311,6 +356,41 @@
           <span class="ms-2">{{ importing() ? 'Importando...' : 'Importar CSV' }}</span>
         </button>
       </li>
+      @if (isAuthenticated()) {
+        <li class="nav-item">
+          <button class="nav-link w-100 text-start" (click)="backupToDrive()" [disabled]="backupToDriveLoading()" style="background:none;border:none;">
+            @if (backupToDriveLoading()) {
+              <i class="bi bi-hourglass-split"></i>
+            } @else {
+              <i class="bi bi-cloud-arrow-up"></i>
+            }
+            <span class="ms-2">{{ backupToDriveLoading() ? 'Subiendo...' : 'Backup a Drive' }}</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link w-100 text-start" (click)="showDriveBackups()" [disabled]="restoreFromDriveLoading()" style="background:none;border:none;">
+            @if (restoreFromDriveLoading()) {
+              <i class="bi bi-hourglass-split"></i>
+            } @else {
+              <i class="bi bi-cloud-arrow-down"></i>
+            }
+            <span class="ms-2">{{ showDriveFiles() ? 'Ocultar backups' : 'Restaurar de Drive' }}</span>
+          </button>
+        </li>
+        @if (showDriveFiles() && driveFiles().length === 0) {
+          <li class="nav-item px-2"><small class="text-muted">Sin backups en Drive</small></li>
+        }
+        @if (showDriveFiles() && driveFiles().length > 0) {
+          @for (f of driveFiles(); track f.id) {
+            <li class="nav-item">
+              <button class="nav-link w-100 text-start" (click)="restoreFromDrive(f.id)" style="background:none;border:none;font-size:0.85rem;" data-bs-dismiss="offcanvas">
+                <i class="bi bi-file-earmark-arrow-down"></i>
+                <span class="ms-2">{{ f.name }}</span>
+              </button>
+            </li>
+          }
+        }
+      }
       @if (importResult()) {
         <li class="nav-item">
           <small class="px-2 d-block" [class.text-success]="!importResult()!.startsWith('Error')" [class.text-danger]="importResult()!.startsWith('Error')">

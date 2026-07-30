@@ -34,7 +34,7 @@ export class GoogleAuthProviderService implements AuthProvider {
     await this.ensureInitialized();
     const response = await SocialLogin.login({
       provider: 'google',
-      options: { scopes: ['email', 'profile'] },
+      options: { scopes: ['email', 'profile', 'https://www.googleapis.com/auth/drive.file'] },
     });
 
     if (response.result.responseType === 'offline') {

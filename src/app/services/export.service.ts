@@ -9,7 +9,7 @@ import type { ManualExpense } from '../models/manual-expense.model';
 @Injectable({ providedIn: 'root' })
 export class ExportService {
 
-  async exportAll(): Promise<void> {
+  async generateCsv(): Promise<string> {
     const [invoices, invoiceItems, categories, products, budgets, alerts, manualExpenses] = await Promise.all([
       db.invoices.toArray(),
       db.invoiceItems.toArray(),
@@ -69,12 +69,19 @@ export class ExportService {
       e.id, e.description, e.amount, e.categoryId, catMap.get(e.categoryId) ?? '', e.date, e.notes ?? '', e.createdAt,
     ])));
 
-    const csv = sections.join('\n\n');
+    return sections.join('\n\n');
+  }
+
+  async exportAll(): Promise<void> {
+    const csv = await this.generateCsv();
     this.download(csv, `nongatu_export_${this.dateStr()}.csv`);
   }
 
   async importFromCsv(file: File): Promise<{ imported: boolean; counts: Record<string, number> }> {
-    const text = await file.text();
+    return this.importFromCsvString(await file.text());
+  }
+
+  async importFromCsvString(text: string): Promise<{ imported: boolean; counts: Record<string, number> }> {
     const sections = this.parseSections(text);
     const counts: Record<string, number> = {};
 
