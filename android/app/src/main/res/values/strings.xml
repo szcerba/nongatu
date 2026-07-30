@@ -4,4 +4,6 @@
     <string name="title_activity_main">Ñongatu</string>
     <string name="package_name">com.vivere.app</string>
     <string name="custom_url_scheme">com.vivere.app</string>
+    <string name="widget_name">Ñongatu</string>
+    <string name="widget_description">Resumen mensual de gastos</string>
 </resources>

@@ -4,6 +4,7 @@ import { ReceiptParserService } from '../../services/receipt-parser.service';
 import { InvoiceService } from '../../services/invoice.service';
 import { CategoryService } from '../../services/category.service';
 import { AlertService } from '../../services/alert.service';
+import { WidgetBridgeService } from '../../services/widget-bridge.service';
 import type { ScanResult } from '../../models/receipt.model';
 import type { Invoice } from '../../models/invoice.model';
 import type { ReceiptItem } from '../../models/receipt.model';
@@ -32,6 +33,7 @@ export class Scan {
     private invoiceService: InvoiceService,
     private categoryService: CategoryService,
     private alertService: AlertService,
+    private widgetBridgeService: WidgetBridgeService,
     private router: Router,
   ) {}
 
@@ -157,6 +159,7 @@ export class Scan {
       await this.invoiceService.save(invoice);
       const month = r.parsed.fecha_emision.slice(0, 7);
       await this.alertService.checkForAlerts(month);
+      await this.widgetBridgeService.updateWidget();
       this.saved.set(true);
     } catch (err) {
       this.error.set('Error al guardar: ' + (err as Error).message);

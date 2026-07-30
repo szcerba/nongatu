@@ -5,6 +5,7 @@ import { CategoryService } from '../../services/category.service';
 import type { ManualExpense as Expense } from '../../models/manual-expense.model';
 import type { Category } from '../../models/category.model';
 import type { Product } from '../../models/product.model';
+import { WidgetBridgeService } from '../../services/widget-bridge.service';
 
 @Component({
   selector: 'app-manual-expense',
@@ -31,6 +32,7 @@ export class ManualExpense {
     private invoiceService: InvoiceService,
     private service: ManualExpenseService,
     private categoryService: CategoryService,
+    private widgetBridgeService: WidgetBridgeService,
   ) {
     this.load();
   }
@@ -103,6 +105,7 @@ export class ManualExpense {
     this.formNotes.set('');
     this.saving.set(false);
     await this.load();
+    await this.widgetBridgeService.updateWidget();
   }
 
   async deleteExpense(expense: Expense) {
@@ -110,6 +113,7 @@ export class ManualExpense {
     if (confirm(`¿Eliminar "${expense.description}"?`)) {
       await this.service.delete(expense.id);
       await this.load();
+      await this.widgetBridgeService.updateWidget();
     }
   }
 
