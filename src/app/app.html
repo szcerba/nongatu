@@ -1,8 +1,19 @@
-<app-sidebar [collapsed]="sidebarCollapsed()" (toggleSidebar)="toggleSidebar()" />
-<div class="main-wrapper" [class.sidebar-collapsed]="sidebarCollapsed()">
-  <app-header />
-  <main class="content">
-    <router-outlet />
-  </main>
-  <app-footer />
-</div>
+@if (isLoading()) {
+  <div class="app-loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2 text-muted">Ñongatu</p>
+  </div>
+} @else if (isLoginRoute()) {
+  <router-outlet />
+} @else {
+  <app-sidebar [collapsed]="sidebarCollapsed()" (toggleSidebar)="toggleSidebar()" />
+  <div class="main-wrapper" [class.sidebar-collapsed]="sidebarCollapsed()">
+    <app-header />
+    <main class="content">
+      <router-outlet />
+    </main>
+    <app-footer />
+  </div>
+}

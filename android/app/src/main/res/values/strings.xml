@@ -6,4 +6,5 @@
     <string name="custom_url_scheme">com.vivere.app</string>
     <string name="widget_name">Ñongatu</string>
     <string name="widget_description">Resumen mensual de gastos</string>
+    <string name="server_client_id">416125812504-h46qvev3fhgijk790l17q5sb0kb95ha1.apps.googleusercontent.com</string>
 </resources>

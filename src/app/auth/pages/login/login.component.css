@@ -1,0 +1,50 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.btn-google {
+  border: 1px solid #dadce0;
+  background: #fff;
+  color: #3c4043;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+.btn-google:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+.btn-google:disabled {
+  opacity: 0.7;
+}
+
+.avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  background: #e9ecef;
+  color: #6c757d;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .btn-google {
+  background: #2d2d2d;
+  border-color: #444;
+  color: #e0e0e0;
+}
+.dark .btn-google:hover:not(:disabled) {
+  background: #383838;
+}
+.dark .avatar-placeholder {
+  background: #333;
+  color: #aaa;
+}

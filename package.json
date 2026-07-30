@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node -e \"const f=require('fs');const key=process.env.groqApiKey||'';f.writeFileSync('src/environments/environment.ts','export const environment = {production: true,groqApiKey:\\\"'+key+'\\\"};');\" && ng build",
+    "build": "node -e \"const f=require('fs');const key=process.env.groqApiKey||'';const gcid=process.env.googleClientId||'';f.writeFileSync('src/environments/environment.ts','export const environment = {production: true,groqApiKey:\\\"'+key+'\\\",googleClientId:\\\"'+gcid+'\\\"};');\" && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -20,6 +20,8 @@
     "@capacitor/android": "^8.4.2",
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
+    "@capacitor/preferences": "^8.0.1",
+    "@capgo/capacitor-social-login": "^8.3.39",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.1",

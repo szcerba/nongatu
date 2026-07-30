@@ -71,6 +71,48 @@
       </a>
     </li>
   </ul>
+  <!-- User section -->
+  @if (isAuthenticated() && user(); as u) {
+    <ul class="nav flex-column p-2 border-top border-secondary">
+      <li class="nav-item px-2 py-1">
+        <div class="d-flex align-items-center gap-2" [title]="collapsed() ? u.email : ''">
+          @if (u.photoUrl) {
+            <img [src]="u.photoUrl" alt="" class="rounded-circle" width="28" height="28">
+          } @else {
+            <span class="user-avatar-sm rounded-circle d-inline-flex align-items-center justify-content-center" style="width:28px;height:28px;background:#059669;color:#fff;font-size:12px;font-weight:bold;flex-shrink:0;">{{ u.name.charAt(0) }}</span>
+          }
+          @if (!collapsed()) {
+            <div class="text-truncate flex-grow-1">
+              <div class="small fw-medium text-truncate" style="line-height:1.2">{{ u.name }}</div>
+              <div class="text-muted text-truncate" style="font-size:11px;line-height:1.2">{{ u.email }}</div>
+            </div>
+          }
+        </div>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link w-100 text-start" (click)="logout()" style="background:none;border:none;color:var(--bs-danger);"
+           [attr.title]="collapsed() ? 'Cerrar sesión' : null">
+          <i class="bi bi-box-arrow-right"></i>
+          @if (!collapsed()) {
+            <span class="ms-2">Cerrar sesión</span>
+          }
+        </button>
+      </li>
+    </ul>
+  } @else {
+    <ul class="nav flex-column p-2 border-top border-secondary">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active"
+           [attr.title]="collapsed() ? 'Iniciar sesión' : null">
+          <i class="bi bi-google"></i>
+          @if (!collapsed()) {
+            <span class="ms-2">Iniciar sesión</span>
+          }
+        </a>
+      </li>
+    </ul>
+  }
+
   <ul class="nav flex-column p-2 border-top border-secondary">
     <li class="nav-item">
       <a class="nav-link" routerLink="/about" routerLinkActive="active"
@@ -192,6 +234,40 @@
         </a>
       </li>
     </ul>
+    <!-- Mobile user section -->
+    @if (isAuthenticated() && user(); as u) {
+      <ul class="nav flex-column border-top border-secondary pt-2">
+        <li class="nav-item px-2 py-1">
+          <div class="d-flex align-items-center gap-2">
+            @if (u.photoUrl) {
+              <img [src]="u.photoUrl" alt="" class="rounded-circle" width="32" height="32">
+            } @else {
+              <span class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;background:#059669;color:#fff;font-size:14px;font-weight:bold;flex-shrink:0;">{{ u.name.charAt(0) }}</span>
+            }
+            <div class="text-truncate flex-grow-1">
+              <div class="small fw-medium text-truncate">{{ u.name }}</div>
+              <div class="text-muted text-truncate" style="font-size:11px;">{{ u.email }}</div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link w-100 text-start" (click)="logout()" style="background:none;border:none;color:var(--bs-danger);">
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="ms-2">Cerrar sesión</span>
+          </button>
+        </li>
+      </ul>
+    } @else {
+      <ul class="nav flex-column border-top border-secondary pt-2">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" routerLinkActive="active" data-bs-dismiss="offcanvas">
+            <i class="bi bi-google"></i>
+            <span class="ms-2">Iniciar sesión</span>
+          </a>
+        </li>
+      </ul>
+    }
+
     <ul class="nav flex-column border-top border-secondary pt-2">
       <li class="nav-item">
         <a class="nav-link" routerLink="/about" routerLinkActive="active" data-bs-dismiss="offcanvas">

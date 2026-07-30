@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth/guards/auth.guard';
 
 import { About } from './pages/about/about';
 import { Services } from './pages/services/services';
@@ -14,15 +15,16 @@ import { NotFound } from './pages/not-found/not-found';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: Dashboard },
-  { path: 'scan', component: Scan },
-  { path: 'history', component: History },
-  { path: 'products', component: Products },
-  { path: 'manual-expense', component: ManualExpense },
-  { path: 'budget', component: Budget },
-  { path: 'alerts', component: Alerts },
-  { path: 'about', component: About },
-  { path: 'services', component: Services },
-  { path: 'contact', component: Contact },
+  { path: 'login', loadChildren: () => import('./auth/auth.routes').then((m) => m.authRoutes) },
+  { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
+  { path: 'scan', component: Scan, canActivate: [authGuard] },
+  { path: 'history', component: History, canActivate: [authGuard] },
+  { path: 'products', component: Products, canActivate: [authGuard] },
+  { path: 'manual-expense', component: ManualExpense, canActivate: [authGuard] },
+  { path: 'budget', component: Budget, canActivate: [authGuard] },
+  { path: 'alerts', component: Alerts, canActivate: [authGuard] },
+  { path: 'about', component: About, canActivate: [authGuard] },
+  { path: 'services', component: Services, canActivate: [authGuard] },
+  { path: 'contact', component: Contact, canActivate: [authGuard] },
   { path: '**', component: NotFound }
 ];

@@ -1,6 +1,8 @@
 import { Component, inject, input, output, signal, ViewChild, ElementRef } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ExportService } from '../../services/export.service';
+import { AuthService } from '../../auth/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,6 +12,8 @@ import { ExportService } from '../../services/export.service';
 })
 export class Sidebar {
   private exportService = inject(ExportService);
+  private auth = inject(AuthService);
+  private router = inject(Router);
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   collapsed = input<boolean>(false);
   toggleSidebar = output<void>();
@@ -17,6 +21,14 @@ export class Sidebar {
   exporting = signal(false);
   importing = signal(false);
   importResult = signal<string | null>(null);
+  readonly user = this.auth.user;
+  readonly isAuthenticated = this.auth.isAuthenticated;
+  readonly authLoading = this.auth.isLoading;
+
+  async logout() {
+    await this.auth.logout();
+    await this.router.navigate(['/login']);
+  }
 
   toggleTheme() {
     document.body.classList.toggle('dark');
