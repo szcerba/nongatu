@@ -81,6 +81,16 @@ export class Sidebar {
     }
   }
 
+  async deleteDriveBackup(fileId: string) {
+    try {
+      await this.driveService.deleteBackup(fileId);
+      this.driveFiles.set(this.driveFiles().filter(f => f.id !== fileId));
+      this.importResult.set('Backup eliminado de Drive');
+    } catch (e: any) {
+      this.importResult.set(`Error: ${e.message ?? 'Error al eliminar backup'}`);
+    }
+  }
+
   async restoreFromDrive(fileId: string) {
     this.restoreFromDriveLoading.set(true);
     this.importResult.set(null);

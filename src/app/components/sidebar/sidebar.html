@@ -206,12 +206,19 @@
       @if (showDriveFiles() && driveFiles().length > 0) {
         @for (f of driveFiles(); track f.id) {
           <li class="nav-item">
-            <button class="nav-link w-100 text-start" (click)="restoreFromDrive(f.id)" style="background:none;border:none;font-size:0.85rem;">
-              <i class="bi bi-file-earmark-arrow-down"></i>
+            <div class="drive-backup-item">
+              <button class="drive-backup-name" (click)="restoreFromDrive(f.id)" [attr.title]="collapsed() ? f.name : null">
+                <i class="bi bi-file-earmark-arrow-down"></i>
+                @if (!collapsed()) {
+                  <span>{{ f.name }}</span>
+                }
+              </button>
               @if (!collapsed()) {
-                <span class="ms-2">{{ f.name }}</span>
+                <button class="drive-backup-delete" (click)="deleteDriveBackup(f.id); $event.stopPropagation()" title="Eliminar backup">
+                  <i class="bi bi-trash"></i>
+                </button>
               }
-            </button>
+            </div>
           </li>
         }
       }
@@ -383,10 +390,15 @@
         @if (showDriveFiles() && driveFiles().length > 0) {
           @for (f of driveFiles(); track f.id) {
             <li class="nav-item">
-              <button class="nav-link w-100 text-start" (click)="restoreFromDrive(f.id)" style="background:none;border:none;font-size:0.85rem;" data-bs-dismiss="offcanvas">
-                <i class="bi bi-file-earmark-arrow-down"></i>
-                <span class="ms-2">{{ f.name }}</span>
-              </button>
+              <div class="drive-backup-item">
+                <button class="drive-backup-name" (click)="restoreFromDrive(f.id)" data-bs-dismiss="offcanvas">
+                  <i class="bi bi-file-earmark-arrow-down"></i>
+                  <span>{{ f.name }}</span>
+                </button>
+                <button class="drive-backup-delete" (click)="deleteDriveBackup(f.id); $event.stopPropagation()" title="Eliminar backup">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
             </li>
           }
         }

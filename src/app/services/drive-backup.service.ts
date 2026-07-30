@@ -42,8 +42,10 @@ export class DriveBackupService {
 
   async uploadBackup(): Promise<void> {
     const csv = await this.exportService.generateCsv();
-    const dateStr = new Date().toISOString().slice(0, 10);
-    const filename = `${this.BACKUP_PREFIX}${dateStr}.csv`;
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10);
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    const filename = `${this.BACKUP_PREFIX}${dateStr}_${timeStr}.csv`;
 
     const token = await this.getToken();
     const boundary = '----' + Math.random().toString(36).slice(2);
@@ -81,5 +83,14 @@ export class DriveBackupService {
     });
     if (!res.ok) throw new Error(`Error al descargar backup (${res.status})`);
     return res.text();
+  }
+
+  async deleteBackup(fileId: string): Promise<void> {
+    const token = await this.getToken();
+    const res = await fetch(`${this.DRIVE_API}/files/${fileId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error(`Error al eliminar backup (${res.status})`);
   }
 }
