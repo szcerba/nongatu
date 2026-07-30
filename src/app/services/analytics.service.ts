@@ -95,6 +95,16 @@ export class AnalyticsService {
       .filter((c) => c.total > 0)
       .sort((a, b) => b.total - a.total);
 
+    const categorizedTotal = byCategory.reduce((s, c) => s + c.total, 0);
+    const uncategorized = total - categorizedTotal;
+    if (uncategorized > 0) {
+      byCategory.push({
+        category: { id: 0, name: 'Sin categoría', icon: 'bi-question-circle', color: '#6b7280', isDefault: false },
+        total: uncategorized,
+        percentage: total > 0 ? Math.round((uncategorized / total) * 1000) / 10 : 0,
+      });
+    }
+
     const productTotals = new Map<string, { total: number; count: number }>();
     for (const item of allItems) {
       const key = item.description.toLowerCase();

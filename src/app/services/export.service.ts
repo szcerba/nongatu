@@ -240,7 +240,7 @@ export class ExportService {
   private async importCategories(rows: string[][], catByName: Map<string, Category>): Promise<number> {
     let count = 0;
     for (const r of rows) {
-      const name = r[1] ?? '';
+      const name = (r[1] ?? '').trim();
       if (catByName.has(name)) continue;
 
       const id = await db.categories.add({
@@ -341,19 +341,25 @@ export class ExportService {
 
     const toAdd: ManualExpense[] = [];
     for (const r of rows) {
-      const key = `${r[4]}|${r[1]}|${this.num(r[2])}`;
+      const key = `${r[5]}|${r[1]}|${this.num(r[2])}`;
       if (existingKeys.has(key)) continue;
 
-      const catName = r[4] ?? '';
-      const cat = catByName.get(catName);
+      const catName = (r[4] ?? '').trim();
+      let cat = catByName.get(catName);
+      if (!cat) {
+        const origId = this.num(r[3]);
+        if (origId > 0) {
+          cat = [...catByName.values()].find(c => c.id === origId);
+        }
+      }
 
       toAdd.push({
         description: r[1] ?? '',
         amount: this.num(r[2]),
         categoryId: cat?.id ?? this.num(r[3]),
-        date: r[4] ?? '',
-        notes: r[5] || undefined,
-        createdAt: new Date(r[6] || Date.now()),
+        date: r[5] ?? '',
+        notes: r[6] || undefined,
+        createdAt: new Date(r[7] || Date.now()),
       });
     }
 
